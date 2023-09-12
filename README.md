@@ -1,4 +1,4 @@
-## Тестовый шлюз интернет-эквайринг сервиса 
+## Тестовый шлюз платежного сервиса Сбербанка. SberPay
 
 ![Payment page](https://github.com/blablatov/gosberpay/raw/master/pagepay.png) 
 
