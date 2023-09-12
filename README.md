@@ -1,7 +1,6 @@
 ## Тестовый шлюз интернет-эквайринг сервиса 
 
-![Payment page]
-(https://github.com/blablatov/gosberpay/blob/master/pagepay.png) 
+![Payment page](https://github.com/blablatov/gosberpay/raw/master/pagepay.png) 
 
 ### Описание. Description  
 Тестовый вебсервер `gosberpay.go` на примере метода `register.do`, интернет-эквайринг сервиса Сбербанка.  
@@ -15,8 +14,7 @@ TODO (private repo) разработка всех модулей шлюза дл
 также для Alfa API  
 	https://developers.alfabank.ru/products/alfa-api/documentation/development/specification/introduction  
 	
-![Gateway]
-(https://github.com/blablatov/gosberpay/blob/master/gateway.png)
+![Gateway](https://github.com/blablatov/gosberpay/raw/master/gateway.png)
 
 
 ### Сборка локально и в Yandex Cloud. Build local and to Yandex Cloud  
