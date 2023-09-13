@@ -1,7 +1,7 @@
 FROM golang:1.20
 
 RUN git clone https://github.com/blablatov/gosberpay.git
-WORKDIR /gosberpay
+WORKDIR gosberpay
 
 RUN go mod download
 
