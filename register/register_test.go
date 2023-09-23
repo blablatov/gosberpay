@@ -65,10 +65,10 @@ func TestStrings(t *testing.T) {
 
 func TestFormRequst(t *testing.T) {
 	// URL для проверки ответа боевого сервиса Сбера
-	//apiUrl := "https://3dsec.sberbank.ru/payment/merchants/test/payment_ru.html?mdOrder=70906e55-7114-41d6-8332-4609dc6590f4"
+	apiUrl := "https://3dsec.sberbank.ru/payment/rest/register.do"
 
 	// URL тестового сорвера локально. Для облака указать внешний IP ВМ.
-	apiUrl := "https://localhost:8443/register"
+	//apiUrl := "https://localhost:8443/register"
 	//Формирование параметров запроса. Params of request
 	params := url.Values{"userName": {"username-api"}}
 	params.Set("password", "password")

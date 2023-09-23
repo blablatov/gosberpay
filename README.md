@@ -37,16 +37,9 @@ TODO (private repo) разработка всех модулей шлюза дл
 	go test -v register_test.go  
 	
 ### Ответ боевого сервера Сбербанка, с недостоверным ID в запросе (нет регистрации)  
-	CLIENT_RANDOM 8725e2b3aa5beb71134b1e84f760047e19f5c09082b18f7c6904a19a2f7abf68 d078394d43b2d5c8e413cafccb41a87ae03dff8b9705754a0635e4ed76fc7aa346bb286df9b92406bf524900da2e2ede 
-	Status = 405 Not Allowed 2023/09/12 15:25:07 
+	Status = 200 OK 2023/09/23 15:49:28 
 	Response of server:
-	<html>
-	<head><title>405 Not Allowed</title></head>
-	<body>
-	<center><h1>405 Not Allowed</h1></center>
-	<hr><center>nginx</center>
-	</body>
-	</html> 
+ 	{"errorCode":"5","errorMessage":"Access denied"}
    
 
   

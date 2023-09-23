@@ -24,6 +24,8 @@ var (
 )
 
 func main() {
+	// URL для проверки ответа боевого сервиса Сбера
+	//apiUrl := "https://3dsec.sberbank.ru/payment/rest/register.do"
 
 	apiUrl := "https://localhost:8443/register"
 	//Формирование параметров rest запроса. Params of request
