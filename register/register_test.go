@@ -1,6 +1,6 @@
-// Регистрация заказа с помощью метода register.do
-// Выполнить тестовый запрос запустив модуль go test -v register_test.go
-// URL REST-методов и требования к запросам описаны здесь:
+// Запрос регистрации заказа (register.do)
+// Выполнить тестовый запрос go test -v register_test.go
+// URL-адреса для доступа к запросам REST описаны здесь:
 // https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start
 
 package main
@@ -65,10 +65,10 @@ func TestStrings(t *testing.T) {
 
 func TestFormRequst(t *testing.T) {
 	// URL для проверки ответа боевого сервиса Сбера
-	apiUrl := "https://3dsec.sberbank.ru/payment/rest/register.do"
+	//apiUrl := "https://3dsec.sberbank.ru/payment/rest/register.do"
 
 	// URL тестового сорвера локально. Для облака указать внешний IP ВМ.
-	//apiUrl := "https://localhost:8443/register"
+	apiUrl := "https://localhost:8443/register"
 	//Формирование параметров запроса. Params of request
 	params := url.Values{"userName": {"username-api"}}
 	params.Set("password", "password")
@@ -88,7 +88,7 @@ func TestFormRequst(t *testing.T) {
 	var w io.Writer
 	w = os.Stdout
 
-	// Формирование параметров структуры запроса. Struct of request
+	// Формирование метаданных структуры запроса. Struct of request
 	client := &http.Client{
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{

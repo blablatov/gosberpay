@@ -1,12 +1,13 @@
-// Тестовый вебсервер на примере метода register.do, интернет-эквайринг сервиса Сбербанка.
-// Использование: $ go run gosberpay.go
-// Выполнить тестовый запрос запустив модуль go test -v register_test.go
-// URL REST-методов и требования к запросам описаны здесь:
+// Тестовый вебсервер для отладки REST запросов, интернет-эквайринг сервиса Сбербанка.
+// Использование: go run gosberpay.go
+// Выполнить тестовый запрос go test -v register_test.go или go test -v getOrderStatusExtended.go
+// URL-адреса для доступа к запросам REST описаны здесь:
 // https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start
 
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -22,7 +23,7 @@ func main() {
 	log.SetPrefix("Event main: ")
 	log.SetFlags(log.Lshortfile)
 
-	// TLS or simple connect. Подключение по протоколу TLS или базовое
+	// TLS or simple connect. Подключение TLS или базовое
 	http.HandleFunc("/", handle)
 	http.ListenAndServeTLS("localhost:8443", crtFile, keyFile, nil)
 	//http.ListenAndServe("localhost:8088", nil)
@@ -50,25 +51,44 @@ func handle(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	for k, v := range r.Form {
-		fmt.Fprintf(w, "Form[%q] = %q\n", k, v)
 		fmt.Printf("Form[%q] = %q\n", k, v)
 	}
-	// Блок методов обработки запросов. Code of processing methods of requests
+	// Код обработки запросов. Code of processing of requests
 	switch r.URL.Path {
-	case "/register": // Метод регистрации заказа register.do. Test method
+	case "/register": // Запрос регистрации заказа register.do.
+		for k, v := range r.Form {
+			if k != "" || v != nil {
+				fmt.Printf("%s, %s\n", k, v)
+			}
+		}
+		orderId := "70906e55-7114-41d6-8332-4609dc6590f4" // Возвращаемый ID заказа. ID of order
+		fmt.Fprintf(w, "orderId: %v", orderId)
+
+	case "/getOrderStatusExtended": //Запрос состояния заказа (getOrderStatusExtended.do)
 		for k, v := range r.Form {
 			if k != "" || v != nil {
 				fmt.Printf("%s, %s\n", k, v)
 			}
 		}
 
-		orderId := "70906e55-7114-41d6-8332-4609dc6590f4" // ID заказа. ID of order
-		r.Form.Add("orderId", orderId)
+		// Возвращаемые тестовые json параметры запроса состояния заказа
+		res, _ := json.Marshal(struct {
+			ErrorCode             string `json: "errorCode"`
+			ErrorMessage          string `json: "errorMessage"`
+			OrderNumber           string `json: "orderNumber"`
+			OrderStatus           string `json: "orderStatus"`
+			ActionCode            string `json: "actionCode"`
+			ActionCodeDescription string `json: "actionCodeDescription"`
+		}{
+			ErrorCode:             "0",
+			ErrorMessage:          "Успешно",
+			OrderNumber:           "0784sse49d0s134567890",
+			OrderStatus:           "6",
+			ActionCode:            "-2007",
+			ActionCodeDescription: "Время сессии истекло",
+		})
+		fmt.Fprintf(w, "Order status: %s", res)
 
-		// Ответ сервера с параметром ID заказа. Response with ID the order
-		for k, v := range r.Form {
-			fmt.Fprintf(w, "Form[%q] = %q\n", k, v)
-		}
 	default:
 	}
 }
