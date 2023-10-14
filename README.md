@@ -8,12 +8,10 @@
 
 	Order status: {"ErrorCode":"0","ErrorMessage":"Успешно","OrderNumber":"0784sse49d0s134567890","OrderStatus":"6","ActionCode":"-2007","ActionCodeDescription":"Время сессии истекло"}
  
-URL-адреса для доступа к запросам REST представлены здесь:
-	https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start  
-	
-TODO разработка всех модулей платежного шлюза.    
-Для Alfa API здесь:  
-	https://developers.alfabank.ru/products/alfa-api/documentation/development/specification/introduction  
+[Интерфейс REST SberPay](https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start)  
+
+TODO разработка всех модулей платежного шлюза.      
+[Для Alfa API здесь](https://developers.alfabank.ru/products/alfa-api/documentation/development/specification/introduction)  
 	
 ![Gateway](https://github.com/blablatov/gosberpay/raw/master/gateway.png)
 
