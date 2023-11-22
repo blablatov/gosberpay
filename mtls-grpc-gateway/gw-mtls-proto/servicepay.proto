@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "google/api/annotations.proto";
+
+option go_package = "./;servicepay"; //dir of create proto-file
+
+package servicepay;
+ 
+service ProductInfo { 
+ rpc addProduct(Product) returns (google.protobuf.StringValue) {
+        option (google.api.http) = {
+            post: "/v1/product"
+            body: "*"
+        }; 
+    }
+ rpc getProduct(google.protobuf.StringValue) returns (Product) {
+         option (google.api.http) = {
+             get:"/v1/product/{value}"
+         }; 
+    }
+// sberpay methodes	
+ rpc addRegister(Register) returns (google.protobuf.StringValue) {
+        option (google.api.http) = {
+            post: "/v1/register"
+            body: "*"
+        }; 
+    }
+ rpc getRegister(google.protobuf.StringValue) returns (Register) {
+         option (google.api.http) = {
+             get:"/v1/register/{value}"
+         }; 
+    }
+}
+
+message Product { 
+ string id = 1; 
+ string name = 2;
+ string description = 3;
+ float price = 4;
+}
+
+message Register {
+ string userName = 1;	//Логин магазина, полученный при подключении
+ string password = 2;	//Пароль магазина, полученный при подключении
+ string token = 3;	//Или открытый ключ для аутентификации, вместо логин-пароль. Обязательно
+ string orderNumber = 4;	//Номер (идентификатор) заказа в системе магазина
+ string amount = 5;	//Сумма платежа в минимальных единицах валюты. Обязательно
+ string returnUrl = 6;	//Адрес перенаправления пользователя в случае успешной оплаты. Обязательно
+ string description = 7;	//Описание заказа в свободной форме
+}
