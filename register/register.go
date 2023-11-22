@@ -49,13 +49,7 @@ type ParamsPay struct {
 	code                 int    `json:"code"`                 // Код ошибки
 	description_err      string `json:"description_err"`      // Подробное техническое объяснение ошибки для отображения пользователю
 	message              string `json:"message"`              // Понятное описание ошибки для отображения пользователю
-	mu                   sync.Mutex
 }
-
-// var (
-// 	crtFile = filepath.Join(".", "certs", "client.crt")
-// 	keyFile = filepath.Join(".", "certs", "client.key")
-// )
 
 func (pp ParamsPay) Register(rch chan string, crtFile, keyFile string) {
 	log.SetPrefix("Rest client event: ")
@@ -121,7 +115,7 @@ func (pp ParamsPay) Register(rch chan string, crtFile, keyFile string) {
 
 	// Проверка идентификатора заказа. Checks order ID
 	res := (string)([]byte(body))
-	if strings.Contains(res, "orderId") || strings.Contains(res, "formUrl") {
+	if strings.Contains(res, "orderId") && strings.Contains(res, "formUrl") {
 		fmt.Println("Запрос регистрации методом register.do - ОК!")
 	}
 
@@ -129,13 +123,25 @@ func (pp ParamsPay) Register(rch chan string, crtFile, keyFile string) {
 	if err != nil {
 		log.Fatalf("Сбой маршалинга JSON: %s", err)
 	}
-	fmt.Printf("Data response = %s\n", data)
+	fmt.Printf("Data rest response = %s\n", data)
 
 	rs := (string)([]byte(data))
-	oid := regexp.MustCompile(`orderId:......................................`)
+
+	oid := regexp.MustCompile(`orderId:.....................................`)
+	furl := regexp.MustCompile(`formUrl:...............................................................................................................`)
+
 	boid := oid.FindAllString(rs, -1)
+	bfurl := furl.FindAllString(rs, -1)
+
 	soid := fmt.Sprint(boid)
+	sfurl := fmt.Sprint(bfurl)
+
 	orderId := strings.Trim(soid, `[orderId: "]`)
+	formUrl := strings.Trim(sfurl, `[formUrl: "]`)
+
 	fmt.Println(" orderId =", orderId)
+	fmt.Println(" formUrl =", formUrl)
+
 	rch <- orderId
+	rch <- formUrl
 }

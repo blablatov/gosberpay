@@ -62,7 +62,10 @@ func handle(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		orderId := "70906e55-7114-41d6-8332-4609dc6590f4" // Возвращаемый ID заказа. ID of order
-		fmt.Fprintf(w, "orderId: %v", orderId)
+		fmt.Fprintf(w, " orderId: %v", orderId)
+
+		formUrl := "https://3dsec.sberbank.ru/payment/merchants/test/payment_ru.html?mdOrder=" + orderId // URL платёжной формы
+		fmt.Fprintf(w, "\n formUrl: %v", formUrl)
 
 	case "/getOrderStatusExtended": //Запрос состояния заказа (getOrderStatusExtended.do)
 		for k, v := range r.Form {
