@@ -8,6 +8,7 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"regexp"
 
 	//"encoding/json"
 	"fmt"
@@ -80,13 +81,21 @@ func TestGet(t *testing.T) {
 		fmt.Fprintf(os.Stderr, "err open: %v\n", err)
 		return
 	}
-	for _, ln := range strings.Split(string(pm), `""`) {
+
+	rs := string(pm)
+	oid := regexp.MustCompile(`orderId=....................................`)
+	boid := oid.FindAllString(rs, -1)
+	soid := fmt.Sprint(boid)
+	orderId := strings.Trim(soid, `[orderId: "]`)
+	fmt.Println(" orderId", orderId)
+
+	for _, ln := range strings.Split(string(orderId), `""`) {
 		count[ln]++
 	}
 
 	for param, n := range count {
 		if n > 0 {
-			getUrl := "https://localhost:8444/v1/register/" + param
+			getUrl := "https://3dsec.sberbank.ru/payment/merchants/test/payment_ru.html?mdOrder" + param
 			resp, err := client.Get(getUrl)
 			if err != nil {
 				log.Fatal(err)
@@ -94,17 +103,12 @@ func TestGet(t *testing.T) {
 			defer resp.Body.Close()
 
 			b, err := ioutil.ReadAll(resp.Body)
-			if resp.StatusCode > 600 {
+			if resp.StatusCode > 500 {
 				log.Fatalf("Response status code: %d and\nbody: %s\n", resp.StatusCode, b)
 			}
 			if err != nil {
 				log.Fatal((err))
 			}
-
-			// var orNum []struct{ OrderNumber string }
-			// if err := json.Unmarshal(b, &orNum); err != nil {
-			// 	log.Fatalf("Err unmarshaling: %s", err)
-			// }
 
 			fmt.Printf("\nResponse get gateway = %s\n", b)
 

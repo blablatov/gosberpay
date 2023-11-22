@@ -160,7 +160,7 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 	}()
 
 	//log.Println(<-rch)
-	rs := fmt.Sprint(<-rch)
+	rs := fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
 	return &wrapper.StringValue{Value: rs}, nil
 	//return &wrapper.StringValue{Value: in.OrderNumber}, status.New(codes.OK, "").Err()
 }

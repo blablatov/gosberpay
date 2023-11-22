@@ -134,7 +134,7 @@ func orderUnaryServerInterceptor(ctx context.Context, req interface{}, info *grp
 	// Gets info about the current RPC call by examining the args passed in
 	// Логика перед вызовом. Получает информацию о текущем RPC-вызове путем анализа переданных аргументов
 	log.Println("====== [Server Interceptor] ", info.FullMethod)
-	log.Printf(" Pre Proc Message : %s", req)
+	log.Printf(" Pre Proc Message: %s", req)
 
 	// Invoking the handler to complete the normal execution of a unary RPC.
 	// Вызываем обработчик, чтобы завершить нормальное выполнение унарного RPC-вызова
@@ -142,6 +142,6 @@ func orderUnaryServerInterceptor(ctx context.Context, req interface{}, info *grp
 
 	// Post processing logic
 	// Логика после вызова
-	log.Printf(" Post Proc Message : %s", m)
+	log.Printf(" Post Proc Message: %s", m)
 	return m, err
 }

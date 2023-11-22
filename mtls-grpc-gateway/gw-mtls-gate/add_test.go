@@ -134,7 +134,7 @@ func BenchmarkAdd(b *testing.B) {
 			/*{"password": "qwerty",
 			"userName": "goman",
 			"amount": "9999",
-			"returnUrl": "https://test.ru"}//Soap UI*/
+			"returnUrl": "https://test.ru"}//For tests of Soap UI*/
 		}{
 			userName:  "goman",
 			password:  "qwerty",
@@ -200,7 +200,7 @@ func BenchmarkAdd(b *testing.B) {
 		if err != nil {
 			log.Println("Error while reading the response bytes:", err)
 		}
-		log.Println("\nResponse add gateway: ", string([]byte(body)))
+		log.Println("\nResponse of grpc gateway: ", string([]byte(body)))
 
 		buf.WriteString(string([]byte(body)))
 		wb = buf.Bytes()
