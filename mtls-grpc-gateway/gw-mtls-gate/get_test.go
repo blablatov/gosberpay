@@ -110,7 +110,7 @@ func TestGet(t *testing.T) {
 				log.Fatal((err))
 			}
 
-			fmt.Printf("\nResponse get gateway = %s\n", b)
+			fmt.Printf("\nPage to pay of SberPay service:\n %s\n", b)
 
 		}
 	}
