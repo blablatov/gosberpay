@@ -193,7 +193,7 @@ func TestOrderStatus(t *testing.T) {
 	wb = buf.Bytes()
 
 	// Запись тестовых значений в лог-файл.
-	err = ioutil.WriteFile("orstatus_log.txt", wb, 0644)
+	err = ioutil.WriteFile("status_log.txt", wb, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -291,7 +291,7 @@ func BenchmarkAdd(b *testing.B) {
 		wb = buf.Bytes()
 	}
 	// Запись тестовых значений в лог-файл.
-	err := ioutil.WriteFile("benchreg_log.txt", wb, 0644)
+	err := ioutil.WriteFile("bench_log.txt", wb, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}

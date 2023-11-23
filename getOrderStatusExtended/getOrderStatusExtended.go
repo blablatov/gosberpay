@@ -80,6 +80,14 @@ func (sp StatusParam) OrderStatusExtended(sch chan string, crtFile, keyFile stri
 		log.Println("Error while reading the response bytes:", err)
 	}
 	log.Println("\nResponse server: \n", string([]byte(body)))
+
 	rb := string([]byte(body))
+
+	data, err := json.MarshalIndent(rb, "=", " ")
+	if err != nil {
+		log.Fatalf("Сбой маршалинга JSON: %s", err)
+	}
+	fmt.Printf("Data status response = %s\n", data)
+
 	sch <- rb
 }
