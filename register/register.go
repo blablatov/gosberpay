@@ -15,18 +15,15 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-
-	//"path/filepath"
 	"regexp"
 	"strings"
-	"sync"
 )
 
 type ParamsPay struct {
-	paymentToken         string `json:"paymentToken"`         // Параметры userName и pаssword передавать не нужно.
+	paymentToken         string `json:"paymentToken"`         // C токеном параметры userName и pаssword передавать не нужно.
 	Amount               string `json:"amount"`               // Сумма платежа в минимальных единицах валюты
 	currency             string `json:"currency"`             // Код валюты платежа ISO 4217
-	language             string `json:"language"`             // Язык в кодировке ISO 639-1
+	Language             string `json:"language"`             // Язык в кодировке ISO 639-1
 	orderNumber          string `json:"orderNumber"`          // номер заказа в системе магазина
 	ReturnUrl            string `json:"returnUrl"`            // Адрес перенаправления в случае успешной оплаты
 	jsonParams           string `json:"jsonParams"`           // Дополнительные параметры запроса. Формат: {«Имя1»: «Значение1», «Имя2»: «Значение2»}
@@ -34,7 +31,7 @@ type ParamsPay struct {
 	expirationDate       string `json:"expirationDate"`       // Дата и время окончания жизни заказа
 	merchantLogin        string `json:"merchantLogin"`        // При заказе от имени дочернего продавца, его логин в этом параметре
 	features             string `json:"features"`             // AUTO_PAYMENT-платёж проводится без проверки подлинности владельца карты
-	orderId              string `json:"orderId"`              // Номер заказа в платежной системе
+	OrderId              string `json:"orderId"`              // Номер заказа в платежной системе
 	UserName             string `json:"userName"`             // Логин служебной учётной записи продавца
 	Password             string `json:"password"`             // Пароль служебной учётной записи продавца
 	pan                  string `json:"pan"`                  // Номер платёжной карты

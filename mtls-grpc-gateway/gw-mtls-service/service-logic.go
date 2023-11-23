@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	ss "getOrderStatusExtended"
 	rg "register"
 	"sync"
 
@@ -13,7 +14,7 @@ import (
 	pb "gw-mtls-proto"
 	//rs "github.com/blablatov/grpc-dsn-dbms/grpc-redis"
 	//pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
-	"github.com/gofrs/uuid"
+	//"github.com/gofrs/uuid"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
@@ -23,84 +24,16 @@ import (
 // Implements server.
 // Сервер используется для реализации services
 type server struct {
-	productMap map[string]*pb.Product
-	restMap    map[string]*pb.Register
-	paramRest  *rg.ParamsPay
+	restMap   map[string]*pb.Register
+	statusMap map[string]*pb.Status
+	paramRest *rg.ParamsPay
 }
 
 type emb struct {
 	rg.ParamsPay
 }
 
-// Method add of product. Метод сервера AddProduct, добавить товар
-func (s *server) AddProduct(ctx context.Context, in *pb.Product) (*wrapper.StringValue, error) {
-	// Bad request, generate and sends of error to client.
-	// Некорректный запрос. Сгенерировать и отправить клиенту ошибку.
-	if in.Name == "-1" {
-		log.Printf("Order ID is invalid! -> Received Order Name %s", in.Id)
-		// Creates state with code of error. Создаем состояние с кодом ошибки InvalidArgument.
-		errorStatus := status.New(codes.InvalidArgument, "Invalid information received")
-		// Describes type of error. Описываем тип ошибки BadRequest_FieldViolation
-		ds, err := errorStatus.WithDetails(
-			&epb.BadRequest_FieldViolation{
-				Field:       "Name",
-				Description: fmt.Sprintf("Order Name received is not valid %s : %s", in.Id, in.Description),
-			},
-		)
-		if err != nil {
-			return nil, errorStatus.Err()
-		}
-		return nil, ds.Err()
-	}
-	out, err := uuid.NewV4()
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, " %v\nError while generating Product ID", err)
-	}
-	in.Id = out.String()
-	if s.productMap == nil {
-		s.productMap = make(map[string]*pb.Product)
-	}
-	s.productMap[in.Id] = in
-
-	// chg := make(chan string, 1)
-	// chs := make(chan string, 1)
-	// chb := make(chan bool, 1)
-
-	// // Input data to redis. Внесение данных в redis
-	// var wg sync.WaitGroup
-	// wg.Add(1) // Counter of goroutines. Значение счетчика.
-	// go rs.SetRedis(in.Id, in.Name, wg, chs)
-	// go func() {
-	// 	wg.Wait()
-	// 	close(chb)
-	// }()
-
-	// // Get data from redis. Получение данных
-	// wg.Add(1) // Counter of goroutines. Значение счетчика.
-	// gval := make(chan string)
-	// go func() {
-	// 	gval <- rs.GetRedis(in.Id, wg, chg)
-	// }()
-	// log.Println(gval)
-	// rval := <-gval
-	// go func() {
-	// 	wg.Wait()
-	// 	close(chb)
-	// }()
-
-	return &wrapper.StringValue{Value: in.Id}, status.New(codes.OK, "").Err()
-}
-
-// Method get of product. Метод сервера GetProduct получить товар
-func (s *server) GetProduct(ctx context.Context, in *wrapper.StringValue) (*pb.Product, error) {
-	value, exists := s.productMap[in.Value]
-	if exists {
-		return value, status.New(codes.OK, "").Err()
-	}
-	return nil, status.Errorf(codes.NotFound, "%v Product does not exist.", in.Value)
-}
-
-// Метод регистрации заказа sberpay
+// Метод запроса регистрации заказа (register.do)
 func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.StringValue, error) {
 	// Bad request, generate and sends of error to client.
 	// Некорректный запрос. Сгенерировать и отправить клиенту ошибку.
@@ -173,4 +106,63 @@ func (s *server) GetRegister(ctx context.Context, in *wrapper.StringValue) (*pb.
 	}
 	return &pb.Register{OrderNumber: in.Value}, nil
 	//return nil, status.Errorf(codes.NotFound, "%v Param does not exist.", in.Value)
+}
+
+// Метод запроса состояния заказа (getOrderStatusExtended.do)
+func (s *server) GetOrderStatusExtended(ctx context.Context, in *pb.Status) (*wrapper.StringValue, error) {
+	// Bad request, generate and sends of error to client.
+	// Некорректный запрос. Сгенерировать и отправить клиенту ошибку.
+	if in.OrderId == "" {
+		log.Printf("OrderId is invalid! -> Received OrderId %s", in.OrderNumber)
+		// Creates state with code of error. Создаем состояние с кодом ошибки InvalidArgument.
+		errorStatus := status.New(codes.InvalidArgument, "Invalid information received")
+		// Describes type of error. Описываем тип ошибки BadRequest_FieldViolation
+		ds, err := errorStatus.WithDetails(
+			&epb.BadRequest_FieldViolation{
+				Field:       "OrderId",
+				Description: fmt.Sprintf("OrderId received is not valid %s : %s", in.OrderId, in.UserName),
+			},
+		)
+		if err != nil {
+			return nil, errorStatus.Err()
+		}
+		return nil, ds.Err()
+	}
+
+	if s.statusMap == nil {
+		s.statusMap = make(map[string]*pb.Status)
+	}
+
+	s.statusMap[in.OrderId] = in
+
+	sm := make([]string, 0, len(s.statusMap))
+	for k, _ := range s.statusMap {
+		if k != "" {
+			sm = append(sm, k)
+		}
+	}
+
+	for k, v := range sm {
+		if v != "" {
+			log.Printf("Param[%v] = %v\n", k, v)
+		}
+	}
+
+	rd := ss.StatusParam{
+		OrderId: in.OrderId,
+	}
+
+	var mu sync.Mutex
+	sch := make(chan string, 10)
+
+	go func() {
+		mu.Lock()
+		ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+		mu.Unlock()
+	}()
+
+	//log.Println(<-rch)
+	rs := fmt.Sprintf("OrderStatus:%s", <-sch)
+	return &wrapper.StringValue{Value: rs}, nil
+	//return &wrapper.StringValue{Value: in.OrderNumber}, status.New(codes.OK, "").Err()
 }

@@ -84,7 +84,7 @@ func main() {
 	// Register gRPC server endpoint, gRPC server should be running and accessible
 	// Сервер gRPC должен быть запущен и доступен
 	mux := runtime.NewServeMux()
-	err = gw.RegisterProductInfoHandlerFromEndpoint(ctx, mux, grpcServerEndpoint, opts)
+	err = gw.RegisterRestRequestsHandlerFromEndpoint(ctx, mux, grpcServerEndpoint, opts)
 	if err != nil {
 		log.Fatalf("Fail to register gRPC service endpoint: %v", err)
 		return

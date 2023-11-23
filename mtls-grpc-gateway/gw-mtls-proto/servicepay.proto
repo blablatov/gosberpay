@@ -7,18 +7,7 @@ option go_package = "./;servicepay"; //dir of create proto-file
 
 package servicepay;
  
-service ProductInfo { 
- rpc addProduct(Product) returns (google.protobuf.StringValue) {
-        option (google.api.http) = {
-            post: "/v1/product"
-            body: "*"
-        }; 
-    }
- rpc getProduct(google.protobuf.StringValue) returns (Product) {
-         option (google.api.http) = {
-             get:"/v1/product/{value}"
-         }; 
-    }
+service RestRequests {
 // sberpay methodes	
  rpc addRegister(Register) returns (google.protobuf.StringValue) {
         option (google.api.http) = {
@@ -30,14 +19,13 @@ service ProductInfo {
          option (google.api.http) = {
              get:"/v1/register/{value}"
          }; 
+    }	
+ rpc getOrderStatusExtended(Status) returns (google.protobuf.StringValue) {
+        option (google.api.http) = {
+            post: "/v1/status"
+            body: "*"
+        }; 
     }
-}
-
-message Product { 
- string id = 1; 
- string name = 2;
- string description = 3;
- float price = 4;
 }
 
 message Register {
@@ -48,4 +36,12 @@ message Register {
  string amount = 5;	//Сумма платежа в минимальных единицах валюты. Обязательно
  string returnUrl = 6;	//Адрес перенаправления пользователя в случае успешной оплаты. Обязательно
  string description = 7;	//Описание заказа в свободной форме
+}
+
+message Status { 
+ string userName = 1;	//Логин магазина, полученный при подключении
+ string password = 2;	//Пароль магазина, полученный при подключении
+ string token = 3;	//Или открытый ключ для аутентификации, вместо логин-пароль
+ string orderId = 4;	//Номер заказа в платежной системе. Обязательно или orderNumber
+ string orderNumber = 5;	//Номер (идентификатор) заказа в системе магазина
 }

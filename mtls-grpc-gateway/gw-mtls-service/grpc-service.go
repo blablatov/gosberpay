@@ -83,7 +83,7 @@ func main() {
 
 	// Registers created service to gRPC-server via generated AP
 	// Регистрируем реализованный сервис на созданном gRPCсервере с помощью сгенерированных AP
-	pb.RegisterProductInfoServer(s, &server{})
+	pb.RegisterRestRequestsServer(s, &server{})
 
 	lis, err := net.Listen("tcp", port) // Listen of port. Начинаем прослушивать порт 50051.
 	if err != nil {
