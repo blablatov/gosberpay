@@ -76,7 +76,7 @@ func TestGet(t *testing.T) {
 	}
 
 	count := make(map[string]int)
-	pm, err := ioutil.ReadFile("add_log.txt")
+	pm, err := ioutil.ReadFile("register_log.txt")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err open: %v\n", err)
 		return
@@ -154,7 +154,7 @@ func BenchmarkGet(b *testing.B) {
 		}
 
 		count := make(map[string]int)
-		pm, err := ioutil.ReadFile("add_log.txt")
+		pm, err := ioutil.ReadFile("register_log.txt")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "err open: %v\n", err)
 			return
@@ -165,7 +165,6 @@ func BenchmarkGet(b *testing.B) {
 
 		for param, n := range count {
 			if n > 0 {
-				//getUrl := "https://localhost:8443/v1/product/" + param
 				getUrl := "https://localhost:8443/v1/register/" + param
 				resp, err := client.Get(getUrl)
 				if err != nil {

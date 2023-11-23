@@ -106,7 +106,7 @@ func TestRegister(t *testing.T) {
 	wb = buf.Bytes()
 
 	// Запись тестовых значений в лог-файл.
-	err = ioutil.WriteFile("add_log.txt", wb, 0644)
+	err = ioutil.WriteFile("register_log.txt", wb, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -193,7 +193,7 @@ func TestOrderStatus(t *testing.T) {
 	wb = buf.Bytes()
 
 	// Запись тестовых значений в лог-файл.
-	err = ioutil.WriteFile("add_log.txt", wb, 0644)
+	err = ioutil.WriteFile("orstatus_log.txt", wb, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -208,7 +208,6 @@ func BenchmarkAdd(b *testing.B) {
 	for i := 0; i < 22; i++ {
 
 		// URL локального тестового сервера. Для облака указать внешний IP ВМ
-		//apiUrl := "https://localhost:8444/v1/product"
 		apiUrl := "https://localhost:8444/v1/register"
 
 		// Формирование json параметров запроса. JSON params of request
@@ -292,7 +291,7 @@ func BenchmarkAdd(b *testing.B) {
 		wb = buf.Bytes()
 	}
 	// Запись тестовых значений в лог-файл.
-	err := ioutil.WriteFile("add_log.txt", wb, 0644)
+	err := ioutil.WriteFile("benchreg_log.txt", wb, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
