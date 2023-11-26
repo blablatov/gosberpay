@@ -83,13 +83,10 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 		ReturnUrl: in.ReturnUrl,
 	}
 
-	var mu sync.Mutex
 	rch := make(chan string, 2)
 
 	go func() {
-		mu.Lock()
 		rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
-		mu.Unlock()
 	}()
 
 	//log.Println(<-rch)
@@ -152,13 +149,10 @@ func (s *server) GetOrderStatusExtended(ctx context.Context, in *pb.Status) (*wr
 		OrderId: in.OrderId,
 	}
 
-	var mu sync.Mutex
 	sch := make(chan string, 10)
 
 	go func() {
-		mu.Lock()
 		ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
-		mu.Unlock()
 	}()
 
 	//log.Println(<-rch)
