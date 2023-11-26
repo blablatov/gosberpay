@@ -1,7 +1,7 @@
 // Тестовый вебсервер для отладки REST запросов, интернет-эквайринг сервиса Сбербанка.
 // Использование: go run gosberpay.go
 // Выполнить тестовый запрос go test -v register_test.go или go test -v getOrderStatusExtended.go
-// URL-адреса для доступа к запросам REST описаны здесь:
+// URL-адреса для доступа к запросам REST здесь:
 // https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start
 
 package main
@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"sync"
 )
 
 var (
@@ -53,6 +54,11 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	for k, v := range r.Form {
 		fmt.Printf("Form[%q] = %q\n", k, v)
 	}
+
+	var mu sync.Mutex
+	var orderId, formUrl string
+	var res []byte
+
 	// Код обработки запросов. Code of processing of requests
 	switch r.URL.Path {
 	case "/register": // Запрос регистрации заказа register.do.
@@ -61,8 +67,16 @@ func handle(w http.ResponseWriter, r *http.Request) {
 				fmt.Printf("%s, %s\n", k, v)
 			}
 		}
-		orderId := "70906e55-7114-41d6-8332-4609dc6590f4" // Возвращаемый ID заказа. ID of order
-		fmt.Fprintf(w, "orderId: %v", orderId)
+
+		mu.Lock()
+		orderId = "70906e55-7114-41d6-8332-4609dc6590f4" // Возвращаемый ID заказа. ID of order
+		mu.Unlock()
+		fmt.Fprintf(w, " orderId: %v", orderId)
+
+		mu.Lock()
+		formUrl = "https://3dsec.sberbank.ru/payment/merchants/test/payment_ru.html?mdOrder=" + orderId // URL платёжной формы
+		mu.Unlock()
+		fmt.Fprintf(w, "\n formUrl: %v", formUrl)
 
 	case "/getOrderStatusExtended": //Запрос состояния заказа (getOrderStatusExtended.do)
 		for k, v := range r.Form {
@@ -72,7 +86,9 @@ func handle(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Возвращаемые тестовые json параметры запроса состояния заказа
-		res, _ := json.Marshal(struct {
+		mu.Lock()
+		defer mu.Unlock()
+		res, _ = json.Marshal(struct {
 			ErrorCode             string `json: "errorCode"`
 			ErrorMessage          string `json: "errorMessage"`
 			OrderNumber           string `json: "orderNumber"`
