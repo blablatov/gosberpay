@@ -1,7 +1,6 @@
-// Расширенный запрос состояния заказа (getOrderStatusExtended.do)
-// Выполнить запрос go run getOrderStatusExtended.go
-// URL-адреса для доступа к запросам REST описаны здесь:
-// https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start
+// Традиционный тест post-запросов, с запущенным обратным прокси-сервером: go run reverse-proxy-server
+// и тестовым вебсервером для отладки REST запросов: go run gosberpay.go
+// + Benchmark тестирование
 
 package main
 

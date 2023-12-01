@@ -101,7 +101,7 @@ func (pp ParamsPay) Register(rch chan string, crtFile, keyFile string) {
 	// Defer to finished the method and got response
 	defer resp.Body.Close()
 
-	fmt.Printf("Status = %v ", resp.Status) // Статус ответа сервера. Status of response
+	fmt.Printf("Status = %v \n", resp.Status) // Статус ответа сервера. Status of response
 
 	// Чтение данных сервера, обработка ошибок. Reads data from server, check errors
 	body, err := ioutil.ReadAll(resp.Body)

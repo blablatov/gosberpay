@@ -1,3 +1,5 @@
+// Обратный прокси-сервер grpc-gateway для поддержки RESTклиентов.
+
 package main
 
 import (
@@ -94,9 +96,6 @@ func main() {
 	if err := http.ListenAndServeTLS(":8444", crtFile, keyFile, mux); err != nil {
 		log.Fatalf("Could not setup HTTPS endpoint: %v", err)
 	}
-	/*if err := http.ListenAndServe(":8080", mux); err != nil {
-		log.Fatalf("Could not setup HTTP endpoint: %v", err)
-	}*/
 }
 
 // The value of OAuth2 token. String of token is in the code
@@ -107,6 +106,8 @@ func fetchToken() *oauth2.Token {
 	}
 }
 
+// Клиентский унарный перехватчик в gRPC для доступа к информации о текущем RPC-вызове, контексту (ctx),
+// строке method, запросу (req) и параметрам CallOption
 func orderUnaryClientInterceptor(ctx context.Context, method string, req, reply interface{},
 	cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 	// Pre-processor phase. Этап предобработки, есть доступ к RPC-запросу перед его отправкой на сервер

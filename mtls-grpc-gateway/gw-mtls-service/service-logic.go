@@ -4,21 +4,19 @@ import (
 	"context"
 	"fmt"
 	ss "getOrderStatusExtended"
-	rg "register"
-	"sync"
-
-	//rg "getredis"
-	"log"
-	//rs "setredis"
-	//"sync"
 	pb "gw-mtls-proto"
-	//rs "github.com/blablatov/grpc-dsn-dbms/grpc-redis"
-	//pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
-	//"github.com/gofrs/uuid"
+	"log"
+	rg "register"
+
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	//rg "getredis"
+	//rs "setredis"
+	//rs "github.com/blablatov/grpc-dsn-dbms/grpc-redis"
+	//pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
+	//"github.com/gofrs/uuid"
 )
 
 // Implements server.
@@ -63,36 +61,36 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 	s.restMap[in.Amount] = in
 	s.restMap[in.ReturnUrl] = in
 
+	// Слайс для хранения всех значений мапы. Slice for map
 	sm := make([]string, 0, len(s.restMap))
+
 	for k, _ := range s.restMap {
 		if k != "" {
 			sm = append(sm, k)
 		}
 	}
 
+	// Тестовый вывод значений. For test
 	for k, v := range sm {
 		if v != "" {
 			log.Printf("Param[%v] = %v\n", k, v)
 		}
 	}
 
-	rd := rg.ParamsPay{
-		UserName:  in.UserName,
-		Password:  in.Password,
-		Amount:    in.Amount,
-		ReturnUrl: in.ReturnUrl,
-	}
-
 	rch := make(chan string, 2)
 
 	go func() {
+		rd := rg.ParamsPay{
+			UserName:  in.UserName,
+			Password:  in.Password,
+			Amount:    in.Amount,
+			ReturnUrl: in.ReturnUrl,
+		}
 		rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
 	}()
 
-	//log.Println(<-rch)
 	rs := fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
 	return &wrapper.StringValue{Value: rs}, nil
-	//return &wrapper.StringValue{Value: in.OrderNumber}, status.New(codes.OK, "").Err()
 }
 
 // Method get of product. Метод сервера GetRegister получить параметр
@@ -102,7 +100,6 @@ func (s *server) GetRegister(ctx context.Context, in *wrapper.StringValue) (*pb.
 		return value, status.New(codes.OK, "").Err()
 	}
 	return &pb.Register{OrderNumber: in.Value}, nil
-	//return nil, status.Errorf(codes.NotFound, "%v Param does not exist.", in.Value)
 }
 
 // Метод запроса состояния заказа (getOrderStatusExtended.do)
@@ -158,5 +155,4 @@ func (s *server) GetOrderStatusExtended(ctx context.Context, in *pb.Status) (*wr
 	//log.Println(<-rch)
 	rs := fmt.Sprintf("OrderStatus:%s", <-sch)
 	return &wrapper.StringValue{Value: rs}, nil
-	//return &wrapper.StringValue{Value: in.OrderNumber}, status.New(codes.OK, "").Err()
 }

@@ -1,43 +1,40 @@
-// Регистрация заказа с помощью метода register.do
-// Выполнить тестовый запрос запустив модуль go test -v register_test.go
-// URL REST-методов и требования к запросам описаны здесь:
-// https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start
+// Традиционный тест get-запросов, с запущенным обратным прокси-сервером: go run reverse-proxy-server
+// и тестовым вебсервером для отладки REST запросов: go run gosberpay.go
+// + Benchmark тестирование
 
 package main
 
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"regexp"
-
-	//"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 )
 
-// func TestStrings(t *testing.T) {
-// 	var tests = []struct {
-// 		payUrl string
-// 	}{
-// 		{"https://test.ru"},
-// 		{"https://3dsec.sberbank.ru/payment/merchants/test/payment_ru.html"},
-// 		{"https://google.com"},
-// 	}
+func TestStrings(t *testing.T) {
+	var tests = []struct {
+		payUrl string
+	}{
+		{"https://test.ru"},
+		{"https://3dsec.sberbank.ru/payment/merchants/test/payment_ru.html"},
+		{"https://google.com"},
+	}
 
-// 	var prevpayUrl string
-// 	for _, test := range tests {
-// 		if test.payUrl != prevpayUrl {
-// 			fmt.Printf("\n%s\n", test.payUrl)
-// 			prevpayUrl = test.payUrl
-// 		}
-// 	}
-// }
+	var prevpayUrl string
+	for _, test := range tests {
+		if test.payUrl != prevpayUrl {
+			fmt.Printf("\n%s\n", test.payUrl)
+			prevpayUrl = test.payUrl
+		}
+	}
+}
 
 func TestGet(t *testing.T) {
 

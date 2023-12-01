@@ -1,5 +1,5 @@
 // Testing remote functions without using network
-// Модульное тестирование бизнес-логики удаленных функций без использования сети
+// Модульное тестирование бизнес-логики удаленных методов с использованием буфера, без передачи по сети.
 
 package main
 
@@ -10,7 +10,9 @@ import (
 	"testing"
 	"time"
 
-	pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
+	//pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
+	pb "gw-mtls-proto"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/test/bufconn"
@@ -30,8 +32,8 @@ func initGRPCServerHTTP2() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterProductInfoServer(s, &server{})
-	// Register reflection service on gRPC server.
+	pb.RegisterRestRequestsServer(s, &server{})
+	// Регистрация службы сервиса gRPC. Register reflection service on gRPC server.
 	reflection.Register(s)
 	go func() {
 		if err := s.Serve(lis); err != nil {
@@ -52,8 +54,8 @@ func getBufDialer(listener *bufconn.Listener) func(context.Context, string) (net
 func initGRPCServerBuffConn() {
 	listener = bufconn.Listen(bufSize)
 	s := grpc.NewServer()
-	pb.RegisterProductInfoServer(s, &server{})
-	// Register reflection service on gRPC server.
+	pb.RegisterRestRequestsServer(s, &server{})
+	// Регистрация службы сервиса gRPC. Register reflection service on gRPC server.
 	reflection.Register(s)
 	go func() {
 		if err := s.Serve(listener); err != nil {
@@ -64,7 +66,7 @@ func initGRPCServerBuffConn() {
 
 // Conventional test that starts a gRPC server and client test the service with RPC
 // Обычный тест, запускает сервер gRPC, клиент проверяет службу с помощью RPC
-func TestServer_AddProduct(t *testing.T) {
+func TestServer_AddRegister(t *testing.T) {
 	// Starting a conventional gRPC server runs on HTTP2
 	// Запускаем стандартный gRPC-сервер поверх HTTP/2
 	initGRPCServerHTTP2()
@@ -73,24 +75,28 @@ func TestServer_AddProduct(t *testing.T) {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewProductInfoClient(conn)
+	c := pb.NewRestRequestsClient(conn)
 
-	// Contact the server and print out its response.
-	name := "Sumsung S10"
-	description := "Samsung Galaxy S10 is the latest smart phone, launched in February 2019"
-	price := float32(700.0)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	// Параметры запроса. Params of request
+	username := "gotov"
+	password := "toor"
+	amount := "99999"
+	returnUrl := "https://test.ru/"
+
+	clientDeadline := time.Now().Add(time.Duration(2 * time.Second))
+	ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
 	defer cancel()
-	// Calls remote method of AddProduct
-	// Вызываем удаленный метод AddProduct
-	r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description, Price: price})
+
+	// Calls remote method of AddRegister
+	// Вызов удаленного метода AddRegister
+	r, err := c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
 	if err != nil { // Checks response. Проверяем ответ
-		log.Fatalf("Could not add product: %v", err)
+		log.Fatalf("Could not add register: %v", err)
 	}
 	log.Printf("Res %s", r.Value)
 }
 
-// Test written using Buffconn
+// Тест с использованием буфера. Test written using Buffconn
 func TestServer_AddProductBufConn(t *testing.T) {
 	ctx := context.Background()
 	initGRPCServerBuffConn()
@@ -99,23 +105,25 @@ func TestServer_AddProductBufConn(t *testing.T) {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewProductInfoClient(conn)
+	c := pb.NewRestRequestsClient(conn)
 
-	// Contact the server and print out its response.
-	name := "Sumsung S999"
-	description := "Samsung Galaxy S999 is the latest smart phone, launched in February 2029"
-	price := float32(777.0)
+	// Параметры запроса. Params of request
+	username := "gotov"
+	password := "toor"
+	amount := "99999"
+	returnUrl := "https://test.ru/"
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description, Price: price})
+	r, err := c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
 	if err != nil {
-		log.Fatalf("Could not add product: %v", err)
+		log.Fatalf("Could not add register: %v", err)
 	}
 	log.Printf(r.Value)
 }
 
 // Тестирование производительности в цикле за указанное колличество итераций
-func BenchmarkServer_AddProductBufConn(b *testing.B) {
+func BenchmarkServer_AddRegisterBufConn(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < 25; i++ {
 		ctx := context.Background()
@@ -125,17 +133,19 @@ func BenchmarkServer_AddProductBufConn(b *testing.B) {
 			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
-		c := pb.NewProductInfoClient(conn)
+		c := pb.NewRestRequestsClient(conn)
 
-		// Contact the server and print out its response.
-		name := "Sumsung S999"
-		description := "Samsung Galaxy S10 is the latest smart phone, launched in February 2029"
-		price := float32(777.0)
+		// Параметры запроса. Params of request
+		username := "gotov"
+		password := "toor"
+		amount := "99999"
+		returnUrl := "https://test.ru/"
+
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()
-		r, err := c.AddProduct(ctx, &pb.Product{Name: name, Description: description, Price: price})
+		r, err := c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
 		if err != nil {
-			log.Fatalf("Could not add product: %v", err)
+			log.Fatalf("Could not add register: %v", err)
 		}
 		log.Printf(r.Value)
 	}
