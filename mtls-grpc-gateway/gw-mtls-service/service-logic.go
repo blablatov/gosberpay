@@ -76,6 +76,7 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 
 	rch := make(chan string, 2)
 
+	// Вызов метода регистрации заказа, register.do
 	go func() {
 		rd := rg.ParamsPay{
 			UserName:  in.UserName,
@@ -141,6 +142,7 @@ func (s *server) GetOrderStatusExtended(ctx context.Context, in *pb.Status) (*wr
 
 	sch := make(chan string, 10)
 
+	// Вызов запроса состояния заказа (getOrderStatusExtended.do)
 	go func() {
 		rd := ss.StatusParam{
 			OrderId: in.OrderId,
