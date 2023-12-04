@@ -3,7 +3,7 @@
 // URL-адреса для доступа к запросам REST описаны здесь:
 // https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start
 
-package main
+package getOrderStatusExtended
 
 import (
 	"bytes"
@@ -15,15 +15,15 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
+	rp "register"
 )
 
-var (
-	crtFile = filepath.Join(".", "certs", "client.crt")
-	keyFile = filepath.Join(".", "certs", "client.key")
-)
+type StatusParam struct {
+	OrderId string `json:"orderId"` // Номер заказа в платежной системе
+	rp.ParamsPay
+}
 
-func main() {
+func (sp StatusParam) OrderStatusExtended(sch chan string, crtFile, keyFile string) {
 
 	// URL для проверки ответа боевого сервиса Сбера
 	//apiUrl := "https://3dsec.sberbank.ru/payment/rest/getOrderStatusExtended.do"
@@ -35,7 +35,7 @@ func main() {
 	payload, _ := json.Marshal(struct {
 		OrderId string `json:"orderId"`
 	}{
-		OrderId: "b8d70aa7-bfb3-4f94-b7bb-aec7273e1fce",
+		OrderId: sp.OrderId,
 	})
 
 	// Подгрузка сертификата и ключа. Loads the certs
@@ -80,4 +80,14 @@ func main() {
 		log.Println("Error while reading the response bytes:", err)
 	}
 	log.Println("\nResponse server: \n", string([]byte(body)))
+
+	rb := string([]byte(body))
+
+	data, err := json.MarshalIndent(rb, "=", " ")
+	if err != nil {
+		log.Fatalf("Сбой маршалинга JSON: %s", err)
+	}
+	fmt.Printf("Data status response = %s\n", data)
+
+	sch <- rb
 }
