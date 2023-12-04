@@ -1,17 +1,20 @@
+// gRPC-сервис
+// go run grpc-service.go
+// go test -v go run grpc-service.go
+
 package main
 
 import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	pb "gw-mtls-proto"
 	"io/ioutil"
 	"log"
 	"net"
 	"path/filepath"
 	"strings"
 
-	//pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
+	pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

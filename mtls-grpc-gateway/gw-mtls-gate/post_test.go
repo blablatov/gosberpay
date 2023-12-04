@@ -1,5 +1,7 @@
-// Традиционный тест post-запросов, с запущенным обратным прокси-сервером: go run reverse-proxy-server
-// и тестовым вебсервером для отладки REST запросов: go run gosberpay.go
+// Традиционный тест post-запросов, с запущенным обратным прокси-сервером:
+// go run reverse-proxy-server.go
+// и тестовым вебсервером для отладки REST запросов.
+// go run gosberpay.go
 // + Benchmark тестирование
 
 package main

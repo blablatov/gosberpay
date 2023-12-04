@@ -1,22 +1,19 @@
+// Методы (логика) gRPC-сервиса
+
 package main
 
 import (
 	"context"
 	"fmt"
-	ss "getOrderStatusExtended"
-	pb "gw-mtls-proto"
 	"log"
-	rg "register"
 
+	ss "github.com/blablatov/mtls-grpc-gateway/getOrderStatusExtended"
+	pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
+	rg "github.com/blablatov/mtls-grpc-gateway/register"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	//rg "getredis"
-	//rs "setredis"
-	//rs "github.com/blablatov/grpc-dsn-dbms/grpc-redis"
-	//pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
-	//"github.com/gofrs/uuid"
 )
 
 // Implements server.
@@ -142,17 +139,15 @@ func (s *server) GetOrderStatusExtended(ctx context.Context, in *pb.Status) (*wr
 		}
 	}
 
-	rd := ss.StatusParam{
-		OrderId: in.OrderId,
-	}
-
 	sch := make(chan string, 10)
 
 	go func() {
+		rd := ss.StatusParam{
+			OrderId: in.OrderId,
+		}
 		ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
 	}()
 
-	//log.Println(<-rch)
 	rs := fmt.Sprintf("OrderStatus:%s", <-sch)
 	return &wrapper.StringValue{Value: rs}, nil
 }

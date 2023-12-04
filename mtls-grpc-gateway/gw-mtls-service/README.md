@@ -1,18 +1,17 @@
-### Create & run Docker image. Создание Docker образа.    
-
-Создание Docker контейнера для gRPC-сервера (build container of server):      
+### gRPC-сервис. gRPC-service     
 
 ```shell script
-docker build -t gw-mtls-service .
-```
-
-Развернуть задание с серверным gRPC-приложением:         
-
-```shell script
-kubectl apply -f gw-grpc-mtls-service.yaml
+go run grpc-service.go
+go test -v grpc-service.go  
 ```  
 
-## DSN for DBMS  
-Code of data exchange with Redis. Обмен данными с Redis. 
+```shell script
+go test -v service-logic-unit_test.go 
+``` 
+
+
+
+
+
 
 

@@ -2,18 +2,20 @@
 
 ### Описание. Description  
 Тестовый вебсервер `gosberpay.go` для отладки REST запросов, интернет-эквайринг сервиса Сбербанка.  
-Без доступа к боевому серверу Сбербанка, тестирование регистрации заказа осуществляется локально посредством тестового `rest`-запроса с нужными данными.  
+Без доступа к боевому серверу Сбербанка, тестирование регистрации заказа осуществляется локально посредством тестового `rest`- запроса с нужными данными.   
 Запрос `register` возвращает номер заказа `orderId` и сообщение `Запрос регистрации методом register.do - ОК!` или описание ошибки.    
 Запрос `getOrderStatusExtended` возвращает данные статуса заказа или описание ошибки:
 
 	Order status: {"ErrorCode":"0","ErrorMessage":"Успешно","OrderNumber":"0784sse49d0s134567890","OrderStatus":"6","ActionCode":"-2007","ActionCodeDescription":"Время сессии истекло"}
  
-[Интерфейс REST SberPay](https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start)  
-
-TODO разработка всех модулей платежного шлюза.      
+[Интерфейс REST SberPay](https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start)    
+  
 [Для Alfa API здесь](https://developers.alfabank.ru/products/alfa-api/documentation/development/specification/introduction)  
 	
 ![Gateway](https://github.com/blablatov/gosberpay/raw/master/gateway.png)
+
+Реализован обмен данными по gRPC каналу через `gRPC-шлюз` с поддержкой HTTP `mtls-grpc-gateway`.  
+Клиентские приложения могут обращаться к `gRPC`-сервису как по `gRPC` или `REST`.     
 
 
 ### Сборка локально и в Yandex Cloud. Build local and to Yandex Cloud  

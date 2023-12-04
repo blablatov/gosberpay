@@ -1,4 +1,7 @@
 // Обратный прокси-сервер grpc-gateway для поддержки RESTклиентов.
+// go run reverse-proxy-server.go
+// go test -v get_test.go
+// go test -v post_test.go
 
 package main
 
@@ -6,13 +9,12 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	gw "gw-mtls-proto"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"path/filepath"
 
-	//gw "github.com/blablatov/mtls-grpc-gateway/gw-mtls-gate"
+	pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/oauth2"
 	"google.golang.org/grpc"
