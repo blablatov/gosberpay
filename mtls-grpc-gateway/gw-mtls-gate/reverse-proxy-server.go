@@ -1,4 +1,4 @@
-// Обратный прокси-сервер grpc-gateway для поддержки RESTклиентов.
+// Обратный прокси-сервер grpc-gateway для поддержки REST клиентов.
 // go run reverse-proxy-server.go
 // go test -v get_test.go
 // go test -v post_test.go
