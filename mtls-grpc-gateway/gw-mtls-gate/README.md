@@ -14,7 +14,7 @@ go test -v get_test.go
 go test -v post_test.go
 ```
 
-Для тестирования gRPC-шлюза, без подключения к gRPC-серверу. To test gRPC-gateway, without conn to rpc server:     
+Для тестирования gRPC-шлюза, без подключения к gRPC-серверу. To test gRPC-gateway, without conn to gRPC-server:     
        
 ```shell script
 go test -v reverse-proxy-server-unit_test.go
