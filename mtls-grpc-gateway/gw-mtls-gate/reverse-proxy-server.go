@@ -14,7 +14,7 @@ import (
 	"net/http"
 	"path/filepath"
 
-	pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
+	pb "github.com/blablatov/gosberpay/mtls-grpc-gateway/gw-mtls-proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/oauth2"
 	"google.golang.org/grpc"

@@ -14,7 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
+	pb "github.com/blablatov/gosberpay/mtls-grpc-gateway/gw-mtls-proto"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

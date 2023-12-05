@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"log"
 
-	ss "github.com/blablatov/mtls-grpc-gateway/getOrderStatusExtended"
-	pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
-	rg "github.com/blablatov/mtls-grpc-gateway/register"
+	pb "github.com/blablatov/gosberpay/mtls-grpc-gateway/gw-mtls-proto"
+	ss "github.com/blablatov/gosberpay/rest/getOrderStatusExtended"
+	rg "github.com/blablatov/gosberpay/rest/register"
 	wrapper "github.com/golang/protobuf/ptypes/wrappers"
 	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
