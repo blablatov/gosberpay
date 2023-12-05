@@ -22,13 +22,13 @@ jobs:
       run: go build -v ./gosberpay.go
 
     - name: Build
-      run: go build -v ./gw-mtls-gate/reverse-proxy-server.go
+      run: go build -v ./mtls-grpc-gateway/gw-mtls-gate/reverse-proxy-server.go
       
     - name: Test
-      run: go test -v ./gw-mtls-gate/reverse-proxy-server-unit_test.go
+      run: go test -v ./mtls-grpc-gateway/gw-mtls-gate/reverse-proxy-server-unit_test.go
       
     - name: Build
-      run: go build -v ./gw-mtls-service/grpc-service.go
+      run: go build -v ./mtls-grpc-gateway/gw-mtls-service/grpc-service.go
 
     - name: Test
-      run: go test -v ./gw-mtls-service/service-logic-unit_test.go
+      run: go test -v ./mtls-grpc-gateway/gw-mtls-service/service-logic-unit_test.go
