@@ -1,4 +1,4 @@
-### gRPC-service and gRPC-gateway via mTLS.  
+### gRPC-шлюз. gRPC-gateway to gRPC-service via mTLS.  
 ***Блок-схема обмена данными (scheme exchange of data):*** 
 
 ```mermaid
