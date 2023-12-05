@@ -1,9 +1,8 @@
-### Тестирование функциональность gRPC прокси-сервера. 
-### Testing code with conn to gRPC-server          
+### Тестирование функциональности gRPC прокси-сервера. Testing code with conn to gRPC-gateway          
   
-Для проверки удаленных методов сервиса.  
-Перед выполнением `reverse-proxy-server` запустить grpc-сервер `grpc-service` и тестовый вебсервер `gosberpay`.   
-(Conventional test that starts a gRPC client test the service with RPC.Before his execute run grpc-server:       
+Для проверки удаленных методов gRPC-сервиса.  
+Перед запуском gRPC-шлюза `reverse-proxy-server` необходимо запустить grpc-сервер `grpc-service` и тестовый веб-сервер `gosberpay`.   
+Before starting gRPC gateway `reverse-proxy-server`, starting gRPC-server `grpc-service` and the test Web-server `gosberpay`:       
 
 ```shell script
 go run gosberpay.go
