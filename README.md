@@ -15,7 +15,7 @@
 ![Gateway](https://github.com/blablatov/gosberpay/raw/master/gateway.png)
 
 Реализован обмен данными по gRPC каналу через `gRPC-шлюз` с поддержкой HTTP `mtls-grpc-gateway`.  
-Клиентские приложения могут обращаться к `gRPC`-сервису как по `gRPC` или `REST`.     
+Клиентские приложения могут обращаться к `gRPC`-сервису по `gRPC` или `REST`.     
 
 
 ### Сборка локально и в Yandex Cloud. Build local and to Yandex Cloud  
