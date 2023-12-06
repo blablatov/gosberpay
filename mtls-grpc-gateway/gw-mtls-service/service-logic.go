@@ -18,7 +18,7 @@ import (
 
 // Implements server.
 // Сервер используется для реализации services
-type server struct {
+type Server struct {
 	restMap   map[string]*pb.Register
 	statusMap map[string]*pb.Status
 	paramRest *rg.ParamsPay
