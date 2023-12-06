@@ -4,7 +4,7 @@
 // URL-адреса для доступа к запросам REST здесь:
 // https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start
 
-package gosberpay
+package main
 
 import (
 	"encoding/json"

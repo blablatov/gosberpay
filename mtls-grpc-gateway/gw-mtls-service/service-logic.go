@@ -1,6 +1,6 @@
 // Методы (логика) gRPC-сервиса
 
-package servicepay
+package main
 
 import (
 	"context"
