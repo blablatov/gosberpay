@@ -2,7 +2,7 @@
 // go run grpc-service.go
 // go test -v go run grpc-service.go
 
-package main
+package service
 
 import (
 	"context"

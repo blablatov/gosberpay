@@ -1,6 +1,6 @@
 // Методы (логика) gRPC-сервиса
 
-package main
+package service
 
 import (
 	"context"
