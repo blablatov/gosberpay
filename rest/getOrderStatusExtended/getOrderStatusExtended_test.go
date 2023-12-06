@@ -3,7 +3,7 @@
 // URL-адреса для доступа к запросам REST описаны здесь:
 // https://securepayments.sberbank.ru/wiki/doku.php/integration:api:rest:start
 
-package main
+package getOrderStatusExtended
 
 import (
 	"bytes"
