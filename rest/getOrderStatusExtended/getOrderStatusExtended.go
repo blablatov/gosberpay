@@ -15,7 +15,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	rp "register"
+
+	rp "github.com/blablatov/gosberpay/rest/register"
 )
 
 type StatusParam struct {

@@ -10,9 +10,7 @@ import (
 	"testing"
 	"time"
 
-	//pb "github.com/blablatov/mtls-grpc-gateway/gw-mtls-proto"
-	pb "gw-mtls-proto"
-
+	pb "github.com/blablatov/gosberpay/mtls-grpc-gateway/gw-mtls-proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/test/bufconn"
