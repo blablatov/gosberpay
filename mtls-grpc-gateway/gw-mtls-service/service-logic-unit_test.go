@@ -3,7 +3,7 @@
 // Объявлены тестовые типы соответствующие интерфейсу, как его экземпляры.
 // go test -v service-logic-unit_test.go
 
-package main
+package servicepay
 
 import (
 	"fmt"

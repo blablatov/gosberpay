@@ -1,6 +1,6 @@
 // Методы (логика) gRPC-сервиса
 
-package main
+package servicepay
 
 import (
 	"context"
@@ -18,7 +18,7 @@ import (
 
 // Implements server.
 // Сервер используется для реализации services
-type Server struct {
+type server struct {
 	restMap   map[string]*pb.Register
 	statusMap map[string]*pb.Status
 	paramRest *rg.ParamsPay

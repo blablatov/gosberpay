@@ -1,7 +1,7 @@
 // Testing remote functions without using network
 // Модульное тестирование бизнес-логики удаленных методов с использованием буфера, без передачи по сети.
 
-package main
+package servicepay
 
 import (
 	"context"
