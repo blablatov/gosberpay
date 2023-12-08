@@ -9,18 +9,18 @@ package servicepay;
  
 service RestRequests {
 // sberpay methodes	
- rpc addRegister(Register) returns (google.protobuf.StringValue) {
+ rpc AddRegister(Register) returns (google.protobuf.StringValue) {
         option (google.api.http) = {
             post: "/v1/register"
             body: "*"
         }; 
     }
- rpc getRegister(google.protobuf.StringValue) returns (Register) {
+ rpc GetRegister(google.protobuf.StringValue) returns (Register) {
          option (google.api.http) = {
              get:"/v1/register/{value}"
          }; 
     }	
- rpc getOrderStatusExtended(Status) returns (google.protobuf.StringValue) {
+ rpc GetOrderStatusExtended(Status) returns (google.protobuf.StringValue) {
         option (google.api.http) = {
             post: "/v1/status"
             body: "*"

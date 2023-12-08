@@ -26,6 +26,9 @@ jobs:
       
     - name: Test
       run: go test -v ./mtls-grpc-gateway/gw-mtls-gate/reverse-proxy-server-unit_test.go
+
+   - name: Build
+      run: go build -v ./mtls-grpc-gateway/gw-mtls-service/grpc-service.go
       
     - name: Test
       run: go test -v ./mtls-grpc-gateway/gw-mtls-service/service-logic-unit_test.go
