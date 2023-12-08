@@ -24,10 +24,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type serv struct {
-	server
-}
-
 var (
 	crtFile            = filepath.Join("..", "gw-mcerts", "server.crt")
 	keyFile            = filepath.Join("..", "gw-mcerts", "server.key")
@@ -90,9 +86,7 @@ func main() {
 
 	// Registers created service to gRPC-server via generated AP
 	// Регистрируем реализованный сервис на созданном gRPCсервере с помощью сгенерированных AP
-	var sr serv
-	srv := &sr.server
-	pb.RegisterRestRequestsServer(s, srv)
+	pb.RegisterRestRequestsServer(s, &server{})
 
 	lis, err := net.Listen("tcp", port) // Listen of port. Начинаем прослушивать порт 50051.
 	if err != nil {
