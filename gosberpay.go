@@ -61,7 +61,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 
 	// Код обработки запросов. Code of processing of requests
 	switch r.URL.Path {
-	case "/register": // Запрос регистрации заказа register.do.
+	case "/register": // Запрос регистрации заказа register.do
 		for k, v := range r.Form {
 			if k != "" || v != nil {
 				fmt.Printf("%s, %s\n", k, v)

@@ -24,10 +24,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type srv struct {
-	pb.UnimplementedRestRequestsServer
-}
-
 var (
 	crtFile            = filepath.Join("..", "gw-mcerts", "server.crt")
 	keyFile            = filepath.Join("..", "gw-mcerts", "server.key")
@@ -90,16 +86,16 @@ func main() {
 
 	// Registers created service to gRPC-server via generated AP
 	// Регистрируем реализованный сервис на созданном gRPCсервере с помощью сгенерированных AP
-	pb.RegisterRestRequestsServer(s, &srv{})
+	pb.RegisterRestRequestsServer(s, &server{})
 
-	lis, err := net.Listen("tcp", port) // Listen of port. Начинаем прослушивать порт 50051.
+	lis, err := net.Listen("tcp", port) // Listen of port. Начинаем прослушивать порт 50051
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	log.Printf("Starting gRPC listener on port " + port)
 
 	// Bonding gRPC-server to listener of the port, waiting a requests
-	// Привязываем gRPC-сервер к прослушивателю, ждем появления сообщений на порту 50051.
+	// Привязываем gRPC-сервер к прослушивателю, ждем появления сообщений на порту 50051
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
@@ -116,9 +112,9 @@ func valid(authorization []string) bool {
 	return token == "blablatok-tokblabla-blablatok"
 }
 
-// Checking token. Определяем функцию ensureValidToken для проверки подлинности токена.
-// Если тот отсутствует или недействителен, тогда перехватчик блокирует выполнение и возвращает ошибку.
-// Или вызывается следующий обработчик, которому передается контекст и интерфейс.
+// Checking token. Определяем функцию ensureValidToken для проверки подлинности токена
+// Если тот отсутствует или недействителен, тогда перехватчик блокирует выполнение и возвращает ошибку
+// Или вызывается следующий обработчик, которому передается контекст и интерфейс
 func ensureValidToken(ctx context.Context, req interface{},
 	info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
