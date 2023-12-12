@@ -1,3 +1,4 @@
+//import "project/other_protos.proto";
 syntax = "proto3";
 
 import "google/protobuf/wrappers.proto";
@@ -44,4 +45,10 @@ message Status {
  string token = 3;	//Или открытый ключ для аутентификации, вместо логин-пароль
  string orderId = 4;	//Номер заказа в платежной системе. Обязательно или orderNumber
  string orderNumber = 5;	//Номер (идентификатор) заказа в системе магазина
+}
+
+// Номера и имена зарезервированных полей сообщений. Don't do it
+message Foo {
+  reserved 88, 55, 99 to 101, 120 to max;
+  reserved "foo", "go";
 }
