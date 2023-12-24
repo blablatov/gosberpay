@@ -79,11 +79,12 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 	ch := make(chan int, 1)
 	var rs string
 
+	p := recover()
 	// Вызов метода регистрации заказа, register.do
 	for i := 0; i < 10; i++ {
 		// Выбор мультиплексирования. Select of multiplexing
 		select {
-		case ch <- i:
+		//case ch <- i:
 		case x := <-ch:
 			go func() {
 				rd := rg.ParamsPay{
@@ -175,6 +176,7 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 			<-ch
 
 		default:
+			panic(p)
 		}
 	}
 
