@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	_ "net/http/pprof"
 
 	pb "github.com/blablatov/gosberpay/mtls-grpc-gateway/gw-mtls-proto"
 	ss "github.com/blablatov/gosberpay/rest/getOrderStatusExtended"
