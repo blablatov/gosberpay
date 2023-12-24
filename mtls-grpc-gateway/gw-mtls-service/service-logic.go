@@ -75,19 +75,109 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 	}
 
 	rch := make(chan string, 2)
+	ch := make(chan int, 1)
+	var rs string
 
 	// Вызов метода регистрации заказа, register.do
-	go func() {
-		rd := rg.ParamsPay{
-			UserName:  in.UserName,
-			Password:  in.Password,
-			Amount:    in.Amount,
-			ReturnUrl: in.ReturnUrl,
-		}
-		rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
-	}()
+	for i := 0; i < 10; i++ {
+		// Выбор мультиплексирования. Select of multiplexing
+		select {
+		case ch <- i:
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
 
-	rs := fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+				//return &wrapper.StringValue{Value: rs}, nil
+
+				fmt.Println("goroutine1 =", x)
+				ch <- 1
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
+
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+				//return &wrapper.StringValue{Value: rs}, nil
+
+				fmt.Println("goroutine2 =", x)
+				ch <- 1
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
+
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+				//return &wrapper.StringValue{Value: rs}, nil
+
+				fmt.Println("goroutine3 =", x)
+				ch <- 1
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
+
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+				//return &wrapper.StringValue{Value: rs}, nil
+
+				fmt.Println("goroutine4 =", x)
+				ch <- 1
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
+
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+				//return &wrapper.StringValue{Value: rs}, nil
+
+				fmt.Println("goroutine5 =", x)
+				ch <- 1
+			}()
+			<-ch
+
+		default:
+		}
+	}
+
+	//rs := fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
 	return &wrapper.StringValue{Value: rs}, nil
 }
 

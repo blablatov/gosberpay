@@ -26,7 +26,7 @@ func TestRegister(t *testing.T) {
 	var buf bytes.Buffer
 
 	// URL локального тестового сервера. Для облака указать внешний IP ВМ
-	apiUrl := "https://158.160.114.38:8444/v1/register"
+	apiUrl := "https://localhost:8444/v1/register"
 
 	// Формирование json параметров запроса. JSON params of request
 	payload, _ := json.Marshal(struct {
