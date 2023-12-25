@@ -82,9 +82,9 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 	p := recover()
 	// Вызов метода регистрации заказа, register.do
 	for i := 0; i < 10; i++ {
-		// Выбор мультиплексирования. Select of multiplexing
+		// Мультиплексирование. Select of multiplexing
 		select {
-		//case ch <- i:
+		case ch <- i:
 		case x := <-ch:
 			go func() {
 				rd := rg.ParamsPay{
@@ -94,9 +94,7 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 					ReturnUrl: in.ReturnUrl,
 				}
 				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
-
 				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
-				//return &wrapper.StringValue{Value: rs}, nil
 
 				fmt.Println("goroutine1 =", x)
 				ch <- 1
@@ -112,9 +110,7 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 					ReturnUrl: in.ReturnUrl,
 				}
 				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
-
 				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
-				//return &wrapper.StringValue{Value: rs}, nil
 
 				fmt.Println("goroutine2 =", x)
 				ch <- 1
@@ -130,9 +126,7 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 					ReturnUrl: in.ReturnUrl,
 				}
 				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
-
 				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
-				//return &wrapper.StringValue{Value: rs}, nil
 
 				fmt.Println("goroutine3 =", x)
 				ch <- 1
@@ -148,9 +142,7 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 					ReturnUrl: in.ReturnUrl,
 				}
 				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
-
 				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
-				//return &wrapper.StringValue{Value: rs}, nil
 
 				fmt.Println("goroutine4 =", x)
 				ch <- 1
@@ -166,9 +158,7 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 					ReturnUrl: in.ReturnUrl,
 				}
 				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
-
 				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
-				//return &wrapper.StringValue{Value: rs}, nil
 
 				fmt.Println("goroutine5 =", x)
 				ch <- 1
@@ -179,8 +169,6 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 			panic(p)
 		}
 	}
-
-	//rs := fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
 	return &wrapper.StringValue{Value: rs}, nil
 }
 
@@ -234,15 +222,80 @@ func (s *server) GetOrderStatusExtended(ctx context.Context, in *pb.Status) (*wr
 	}
 
 	sch := make(chan string, 10)
+	ch := make(chan int, 1)
+	var rs string
 
+	p := recover()
 	// Вызов запроса состояния заказа (getOrderStatusExtended.do)
-	go func() {
-		rd := ss.StatusParam{
-			OrderId: in.OrderId,
-		}
-		ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
-	}()
+	for i := 0; i < 10; i++ {
+		// Мультиплексирование. Select of multiplexing
+		select {
+		case ch <- i:
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs := fmt.Sprintf("OrderStatus:%s", <-sch)
 
-	rs := fmt.Sprintf("OrderStatus:%s", <-sch)
+				fmt.Println("go1 =", x)
+				ch <- 1
+			}()
+
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs := fmt.Sprintf("OrderStatus:%s", <-sch)
+
+				fmt.Println("go2 =", x)
+				ch <- 1
+			}()
+
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs := fmt.Sprintf("OrderStatus:%s", <-sch)
+
+				fmt.Println("go3 =", x)
+				ch <- 1
+			}()
+
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs := fmt.Sprintf("OrderStatus:%s", <-sch)
+
+				fmt.Println("go4 =", x)
+				ch <- 1
+			}()
+
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs := fmt.Sprintf("OrderStatus:%s", <-sch)
+
+				fmt.Println("go5 =", x)
+				ch <- 1
+			}()
+
+		default:
+			panic(p)
+		}
+	}
+
+	//rs := fmt.Sprintf("OrderStatus:%s", <-sch)
 	return &wrapper.StringValue{Value: rs}, nil
 }

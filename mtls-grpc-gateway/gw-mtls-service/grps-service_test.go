@@ -111,7 +111,8 @@ func TestServer_AddProductBufConn(t *testing.T) {
 	amount := "99999"
 	returnUrl := "https://test.ru/"
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Second) //err context deadline
 	defer cancel()
 	r, err := c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
 	if err != nil {

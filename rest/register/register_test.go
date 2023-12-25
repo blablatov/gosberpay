@@ -14,8 +14,14 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
+)
+
+var (
+	crtFile = filepath.Join(".", "certs", "client.crt")
+	keyFile = filepath.Join(".", "certs", "client.key")
 )
 
 func TestStrings(t *testing.T) {
