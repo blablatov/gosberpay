@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	_ "net/http/pprof"
 
 	pb "github.com/blablatov/gosberpay/mtls-grpc-gateway/gw-mtls-proto"
 	ss "github.com/blablatov/gosberpay/rest/getOrderStatusExtended"
@@ -66,28 +67,114 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 			sm = append(sm, k)
 		}
 	}
-
-	// Тестовый вывод значений. For test
+	// Тестовый вывод сообщений. For test
 	for k, v := range sm {
 		if v != "" {
 			log.Printf("Param[%v] = %v\n", k, v)
 		}
 	}
 
+	// Каналы для передачи сообщений и мультиплексирования.
+	// Chans for message and multiplexing
 	rch := make(chan string, 2)
+	ch := make(chan int, 1)
+	var rs string
 
+	p := recover()
 	// Вызов метода регистрации заказа, register.do
-	go func() {
-		rd := rg.ParamsPay{
-			UserName:  in.UserName,
-			Password:  in.Password,
-			Amount:    in.Amount,
-			ReturnUrl: in.ReturnUrl,
-		}
-		rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
-	}()
+	for i := 0; i < 2; i++ {
+		// Мультиплексирование вызова метода. Select of multiplexing
+		select {
+		case ch <- i:
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
 
-	rs := fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+				fmt.Println("goroutine1 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+
+				fmt.Println("goroutine2 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+
+				fmt.Println("goroutine3 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+
+				fmt.Println("goroutine4 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := rg.ParamsPay{
+					UserName:  in.UserName,
+					Password:  in.Password,
+					Amount:    in.Amount,
+					ReturnUrl: in.ReturnUrl,
+				}
+				rg.ParamsPay.Register(rd, rch, crtFile, keyFile)
+				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
+
+				fmt.Println("goroutine5 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		default:
+			panic(p)
+		}
+	}
 	return &wrapper.StringValue{Value: rs}, nil
 }
 
@@ -127,29 +214,105 @@ func (s *server) GetOrderStatusExtended(ctx context.Context, in *pb.Status) (*wr
 
 	s.statusMap[in.OrderId] = in
 
+	// Слайс для хранения всех значений мапы. Slice for map
 	sm := make([]string, 0, len(s.statusMap))
 	for k, _ := range s.statusMap {
 		if k != "" {
 			sm = append(sm, k)
 		}
 	}
-
+	// Тестовый вывод сообщений. For test
 	for k, v := range sm {
 		if v != "" {
 			log.Printf("Param[%v] = %v\n", k, v)
 		}
 	}
 
-	sch := make(chan string, 10)
+	// Каналы для передачи сообщений и мультиплексирования.
+	// Chans for message and multiplexing
+	sch := make(chan string, 1)
+	ch := make(chan int, 1)
+	var rs string
 
-	// Вызов запроса состояния заказа (getOrderStatusExtended.do)
-	go func() {
-		rd := ss.StatusParam{
-			OrderId: in.OrderId,
+	p := recover()
+	// Вызов метода запроса состояния заказа (getOrderStatusExtended.do)
+	for i := 0; i < 2; i++ {
+		// Мультиплексирование вызова метода. Select of multiplexing
+		select {
+		case ch <- i:
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs = fmt.Sprintf("OrderStatus:%s", <-sch)
+
+				fmt.Println("go1 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs = fmt.Sprintf("OrderStatus:%s", <-sch)
+
+				fmt.Println("go2 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs = fmt.Sprintf("OrderStatus:%s", <-sch)
+
+				fmt.Println("go3 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs = fmt.Sprintf("OrderStatus:%s", <-sch)
+
+				fmt.Println("go4 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		case x := <-ch:
+			go func() {
+				rd := ss.StatusParam{
+					OrderId: in.OrderId,
+				}
+				ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
+				rs = fmt.Sprintf("OrderStatus:%s", <-sch)
+
+				fmt.Println("go5 =", x)
+				ch <- 1
+				close(ch)
+			}()
+			<-ch
+
+		default:
+			panic(p)
 		}
-		ss.StatusParam.OrderStatusExtended(rd, sch, crtFile, keyFile)
-	}()
-
-	rs := fmt.Sprintf("OrderStatus:%s", <-sch)
+	}
 	return &wrapper.StringValue{Value: rs}, nil
 }

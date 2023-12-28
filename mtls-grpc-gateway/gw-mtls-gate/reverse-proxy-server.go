@@ -12,7 +12,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
+	rn "runtime"
 
 	gw "github.com/blablatov/gosberpay/mtls-grpc-gateway/gw-mtls-proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -37,6 +39,8 @@ const (
 func main() {
 	log.SetPrefix("Gate event: ")
 	log.SetFlags(log.Lshortfile)
+
+	defer printStack()
 
 	// Set up the credentials for the connection.
 	// Значение токена OAuth2. Используем строку, прописанную в коде.
@@ -123,4 +127,10 @@ func orderUnaryClientInterceptor(ctx context.Context, method string, req, reply 
 	}
 	log.Printf("\n req = %v\n reply = %v\n", req, reply)
 	return err
+}
+
+func printStack() {
+	var buf [4096]byte
+	n := rn.Stack(buf[:], false)
+	os.Stdout.Write(buf[:n])
 }

@@ -15,7 +15,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"testing"
+)
+
+var (
+	crtFile = filepath.Join(".", "certs", "client.crt")
+	keyFile = filepath.Join(".", "certs", "client.key")
 )
 
 func TestGetOrderStatusExtended(t *testing.T) {
