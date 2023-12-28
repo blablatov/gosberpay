@@ -98,10 +98,10 @@ func (s *server) AddRegister(ctx context.Context, in *pb.Register) (*wrapper.Str
 				rs = fmt.Sprintf("orderId=%s formUrl=%s", <-rch, <-rch)
 
 				fmt.Println("goroutine1 =", x)
-				ch <- 1
-				close(ch)
+				ch <- 1   // Отправить в канал статус о выполнении
+				close(ch) // Закрыть канал
 			}()
-			<-ch
+			<-ch // Получить статус о выполнении
 
 		case x := <-ch:
 			go func() {
@@ -249,10 +249,10 @@ func (s *server) GetOrderStatusExtended(ctx context.Context, in *pb.Status) (*wr
 				rs = fmt.Sprintf("OrderStatus:%s", <-sch)
 
 				fmt.Println("go1 =", x)
-				ch <- 1
-				close(ch)
+				ch <- 1   // Отправить в канал статус о выполнении
+				close(ch) // Закрыть канал
 			}()
-			<-ch
+			<-ch // Получить статус о выполнении
 
 		case x := <-ch:
 			go func() {
