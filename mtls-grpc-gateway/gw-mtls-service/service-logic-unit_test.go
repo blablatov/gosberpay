@@ -39,7 +39,7 @@ func (rd *restData) AddRegister(interface{}, testData) (bool, error) {
 	return false, fmt.Errorf("AddRegister test error")
 }
 
-func TestAddRegister(t *testing.T) {
+func TestAddRegisterUnit(t *testing.T) {
 	type args struct {
 		reg rester
 	}
@@ -220,7 +220,7 @@ func (rd *restData) GetOrderStatusExtended(interface{}, testData) (bool, error) 
 	return false, fmt.Errorf("GetOrderStatusExtended test error")
 }
 
-func TestGetOrderStatusExtended(t *testing.T) {
+func TestGetOrderStatusExtendedUnit(t *testing.T) {
 	type args struct {
 		reg rester
 	}
