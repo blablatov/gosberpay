@@ -63,7 +63,7 @@ func TestAddRegister(t *testing.T) {
 	amount := "99999"
 	returnUrl := "https://test.ru/"
 
-	clientDeadline := time.Now().Add(time.Duration(2 * time.Second))
+	clientDeadline := time.Now().Add(time.Duration(500 * time.Millisecond)) //select and set Deadline
 	ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
 	defer cancel()
 
@@ -91,7 +91,7 @@ func TestGetOrderStatusExtended(t *testing.T) {
 	// Параметры запроса. Params of request
 	orderId := "70906e55-7114-41d6-8332-4609dc6590f4"
 
-	clientDeadline := time.Now().Add(time.Duration(2 * time.Second))
+	clientDeadline := time.Now().Add(time.Duration(500 * time.Millisecond)) // select and set Deadline
 	ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
 	defer cancel()
 
@@ -144,8 +144,7 @@ func TestAddRegisterBufConn(t *testing.T) {
 	amount := "99999"
 	returnUrl := "https://test.ru/"
 
-	//ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Second) //err context deadline
+	ctx, cancel := context.WithTimeout(context.Background(), 400*time.Millisecond)
 	defer cancel()
 	r, err := c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
 	if err != nil {
@@ -168,8 +167,7 @@ func TestGetOrderStatusExtendedBufConn(t *testing.T) {
 	// Параметры запроса. Params of request
 	orderId := "70906e55-7114-41d6-8332-4609dc6590f4"
 
-	//ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Second) //err context deadline
+	ctx, cancel := context.WithTimeout(context.Background(), 400*time.Millisecond) // select and set WithTimeout
 	defer cancel()
 	r, err := c.GetOrderStatusExtended(ctx, &pb.Status{OrderId: orderId})
 	if err != nil {
@@ -184,7 +182,7 @@ func TestGetOrderStatusExtendedBufConn(t *testing.T) {
 func Benchmark_AddRegisterBufConn(b *testing.B) {
 
 	b.ReportAllocs()
-	for i := 0; i < 25; i++ {
+	for i := 0; i < 250; i++ {
 
 		ctx := context.Background()
 		initGRPCServerBufConn()
@@ -201,7 +199,9 @@ func Benchmark_AddRegisterBufConn(b *testing.B) {
 		amount := "99999"
 		returnUrl := "https://test.ru/"
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		//ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		clientDeadline := time.Now().Add(time.Duration(500 * time.Millisecond)) // select and set Deadline
+		ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
 		defer cancel()
 		r, err := c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
 		if err != nil {
@@ -216,7 +216,7 @@ func Benchmark_AddRegisterBufConn(b *testing.B) {
 func Benchmark_GetOrderStatusExtendedBufConn(b *testing.B) {
 
 	b.ReportAllocs()
-	for i := 0; i < 25; i++ {
+	for i := 0; i < 250; i++ {
 
 		ctx := context.Background()
 		initGRPCServerBufConn()
@@ -230,8 +230,7 @@ func Benchmark_GetOrderStatusExtendedBufConn(b *testing.B) {
 		// Параметры запроса. Params of request
 		orderId := "70906e55-7114-41d6-8332-4609dc6590f4"
 
-		//ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-		ctx, cancel := context.WithTimeout(context.Background(), 500*time.Second) //err context deadline
+		ctx, cancel := context.WithTimeout(context.Background(), 400*time.Millisecond) // select and set WithTimeout
 		defer cancel()
 		r, err := c.GetOrderStatusExtended(ctx, &pb.Status{OrderId: orderId})
 		if err != nil {
