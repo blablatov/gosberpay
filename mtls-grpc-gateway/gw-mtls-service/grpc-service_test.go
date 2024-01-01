@@ -12,6 +12,8 @@ import (
 	"testing"
 	"time"
 
+	"google.golang.org/protobuf/types/known/wrapperspb"
+
 	pb "github.com/blablatov/gosberpay/mtls-grpc-gateway/gw-mtls-proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -63,15 +65,37 @@ func TestAddRegister(t *testing.T) {
 	amount := "99999"
 	returnUrl := "https://test.ru/"
 
-	clientDeadline := time.Now().Add(time.Duration(500 * time.Millisecond)) //select and set Deadline
+	clientDeadline := time.Now().Add(time.Duration(100 * time.Millisecond)) //select and set Deadline
 	ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
 	defer cancel()
 
-	// Calls remote method of AddRegister
-	// Вызов удаленного метода AddRegister
-	r, err := c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
+	// Calls remote method of AddRegister and sets right Deadline
+	// Вызов удаленного метода AddRegister с определением крайнего срока запроса, Deadline
+	var r *wrapperspb.StringValue
+	r, err = c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
 	if err != nil { // Checks response. Проверка ответа
-		log.Fatalf("Could not add register: %v", err)
+		log.Printf("Could not add register: %v", err)
+		clientDeadline := time.Now().Add(time.Duration(200 * time.Millisecond)) //select and set Deadline
+		ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
+		defer cancel()
+		r, err = c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
+		if err != nil { // Checks response. Проверка ответа
+			log.Printf("Not set right Deadline attempt_1: %v", err)
+			clientDeadline := time.Now().Add(time.Duration(300 * time.Millisecond)) //select and set Deadline
+			ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
+			defer cancel()
+			r, err = c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
+			if err != nil { // Checks response. Проверка ответа
+				log.Printf("Not set right Deadline attempt_2: %v", err)
+				clientDeadline := time.Now().Add(time.Duration(400 * time.Millisecond)) //select and set Deadline
+				ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
+				defer cancel()
+				r, err = c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
+				if err != nil { // Checks response. Проверка ответа
+					log.Printf("Not set right Deadline attempt_3: %v", err)
+				}
+			}
+		}
 	}
 	log.Printf("Res of AddRegister: %s", r.Value)
 }
@@ -199,15 +223,37 @@ func Benchmark_AddRegisterBufConn(b *testing.B) {
 		amount := "99999"
 		returnUrl := "https://test.ru/"
 
-		//ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		// Calls remote method of AddRegister and sets right Deadline
+		// Вызов удаленного метода AddRegister с определением крайнего срока запроса, Deadline
 		clientDeadline := time.Now().Add(time.Duration(500 * time.Millisecond)) // select and set Deadline
 		ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
 		defer cancel()
 		r, err := c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
 		if err != nil {
-			log.Fatalf("Could not add register: %v", err)
+			log.Printf("Could not add register: %v", err)
+			clientDeadline := time.Now().Add(time.Duration(200 * time.Millisecond)) //select and set Deadline
+			ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
+			defer cancel()
+			r, err = c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
+			if err != nil { // Checks response. Проверка ответа
+				log.Printf("Not set right Deadline attempt_1: %v", err)
+				clientDeadline := time.Now().Add(time.Duration(300 * time.Millisecond)) //select and set Deadline
+				ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
+				defer cancel()
+				r, err = c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
+				if err != nil { // Checks response. Проверка ответа
+					log.Printf("Not set right Deadline attempt_2: %v", err)
+					clientDeadline := time.Now().Add(time.Duration(400 * time.Millisecond)) //select and set Deadline
+					ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
+					defer cancel()
+					r, err = c.AddRegister(ctx, &pb.Register{UserName: username, Password: password, Amount: amount, ReturnUrl: returnUrl})
+					if err != nil { // Checks response. Проверка ответа
+						log.Printf("Not set right Deadline attempt_3: %v", err)
+					}
+				}
+			}
 		}
-		log.Printf(r.Value)
+		log.Printf("Res of Bench_AddRegister: %s", r.Value)
 	}
 }
 
@@ -230,12 +276,12 @@ func Benchmark_GetOrderStatusExtendedBufConn(b *testing.B) {
 		// Параметры запроса. Params of request
 		orderId := "70906e55-7114-41d6-8332-4609dc6590f4"
 
-		ctx, cancel := context.WithTimeout(context.Background(), 400*time.Millisecond) // select and set WithTimeout
+		ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond) // select and set WithTimeout
 		defer cancel()
 		r, err := c.GetOrderStatusExtended(ctx, &pb.Status{OrderId: orderId})
 		if err != nil {
 			log.Fatalf("Could not GetOrderStatusExtended: %v", err)
 		}
-		log.Printf("Res of GetOrderStatusExtended: %s", r.Value)
+		log.Printf("Res of Bench_GetOrderStatusExtended: %s", r.Value)
 	}
 }

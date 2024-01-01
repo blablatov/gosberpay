@@ -206,7 +206,7 @@ func BenchmarkAdd(b *testing.B) {
 	var buf bytes.Buffer
 
 	b.ReportAllocs()
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 350; i++ {
 
 		// URL локального тестового сервера. Для облака указать внешний IP ВМ
 		apiUrl := "https://localhost:8444/v1/register"
