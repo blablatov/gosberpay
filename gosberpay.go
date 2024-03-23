@@ -24,6 +24,7 @@ func main() {
 	log.SetPrefix("Event main: ")
 	log.SetFlags(log.Lshortfile)
 
+	LogInfo("web-server listening on localhost:8443")
 	// TLS or simple connect. Подключение TLS или базовое
 	http.HandleFunc("/", handle)
 	http.ListenAndServeTLS("localhost:8443", crtFile, keyFile, nil)
@@ -107,4 +108,11 @@ func handle(w http.ResponseWriter, r *http.Request) {
 
 	default:
 	}
+}
+
+var logger = log.Default()
+
+func LogInfo(format string, v ...any) {
+	msg := fmt.Sprintf(format, v...)
+	logger.Printf("[Info]: %s\n", msg)
 }

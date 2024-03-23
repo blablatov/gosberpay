@@ -9,6 +9,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -98,6 +99,7 @@ func main() {
 		return
 	}
 
+	LogInfo("grpc-gateway-server listening on localhost:8444")
 	// TLS connect. Подключение по протоколу TLS
 	if err := http.ListenAndServeTLS(":8444", crtFile, keyFile, mux); err != nil {
 		log.Fatalf("Could not setup HTTPS endpoint: %v", err)
@@ -133,4 +135,11 @@ func printStack() {
 	var buf [4096]byte
 	n := rn.Stack(buf[:], false)
 	os.Stdout.Write(buf[:n])
+}
+
+var logger = log.Default()
+
+func LogInfo(format string, v ...any) {
+	msg := fmt.Sprintf(format, v...)
+	logger.Printf("[Info]: %s\n", msg)
 }

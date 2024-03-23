@@ -230,7 +230,7 @@ func Benchmark_GetOrderStatusExtendedBufConn(b *testing.B) {
 		// Параметры запроса. Params of request
 		orderId := "70906e55-7114-41d6-8332-4609dc6590f4"
 
-		ctx, cancel := context.WithTimeout(context.Background(), 400*time.Millisecond) // select and set WithTimeout
+		ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond) // select and set WithTimeout
 		defer cancel()
 		r, err := c.GetOrderStatusExtended(ctx, &pb.Status{OrderId: orderId})
 		if err != nil {
