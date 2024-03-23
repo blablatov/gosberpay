@@ -1,4 +1,10 @@
-## Тестовый шлюз платежного сервиса Сбербанка. SberPay
+## Тестовый шлюз платежного сервиса Сбербанка. SberPay  
+## Содержание
+- [Описание](https://github.com/blablatov/gosberpay/blob/master/README.md#Описание-Description)  
+- [Сборка сервиса](https://github.com/blablatov/gosberpay/blob/master/README.md#Сборка-локально-и-в-Yandex-Cloud-Build-local-and-to-Yandex-Cloud)
+- [Тестирование сервиса](https://github.com/blablatov/gosberpay/blob/master/README.md#Тестирование-локально-и-в-Yandex-Cloud-Testing-local-and-to-Yandex-Cloud)
+- [Тестирование запросов](https://github.com/blablatov/gosberpay/blob/master/README.md#Ответ-боевого-сервера-Сбербанка:)
+- [Блок-схема обмена данными](https://github.com/blablatov/gosberpay/blob/master/README.md#Блок-схема-обмена-данными-Block-diagram-of-work)
 
 ### Описание. Description  
 Тестовый вебсервер `gosberpay.go` для отладки REST запросов, интернет-эквайринг сервиса Сбербанка.  
@@ -19,30 +25,67 @@
 
 
 ### Сборка локально и в Yandex Cloud. Build local and to Yandex Cloud  
-#### Локально. Local:  
+[:arrow_up:Содержание](#Содержание)  
+#### Локально. Local: 
+	go build ./..
+или  
+
+	cd ./mtls-grpc-gateway/gw-mtls-gate 
+ 	go build .
+  	./gw-mtls-gate  
+ 	cd ./mtls-grpc-gateway/gw-mtls-service
+  	go build .
+   	./gw-mtls-service    
+или  
+
 	docker build -t gosberpay -f Dockerfile  
 	
-#### Облако. Cloud.  
+#### Облако. Cloud  
 	sudo docker build . -t cr.yandex/${REGISTRY_ID}/debian:gosberpay -f Dockerfile
 
 
-### Тестирование локально и в Yandex Cloud. Testing local and to Yandex Cloud       
-#### Локально. Local:    
+### Тестирование локально и в Yandex Cloud. Testing local and to Yandex Cloud  
+[:arrow_up:Содержание](#Содержание)  
+#### Локально. Local: 
+Тестирование веб-сервера:  
+
+	cd ./rest
 	go test -v register_test.go    
 	go test -v getOrderStatusExtended_test.go  
+Тестирование grpc-шлюза:  
 
-#### Облако. Cloud.  
-	sudo docker run --name gosberpay -p 8443:8443 -d cr.yandex/${REGISTRY_ID}/debian:gosberpay  
-	go test -v register_test.go  
-	go test -v getOrderStatusExtended_test.go  	
+	cd ./mtls-grpc-gateway/gw-mtls-gate  
+ 	go test -v .
+  	go test --bench=.  
+Тестирование логики удаленных методов grpc-сервиса без передачи данных по сети, имитация запуска сервера с использованием буфера:  
+
+	cd ./mtls-grpc-gateway/gw-mtls-service  
+ 	go test -v .  
+ 		
 	
+#### Облако. Cloud  
 
+	sudo docker run --name gosberpay -p 8443:8443 -d cr.yandex/${REGISTRY_ID}/debian:gosberpay  
+ Тестирование веб-сервера:  
+ 
+ 	cd ./rest
+	go test -v register_test.go  
+	go test -v getOrderStatusExtended_test.go  
+ Тестирование grpc-шлюза:  
+ 
+ 	cd ./mtls-grpc-gateway/gw-mtls-gate  
+ 	go test -v .
+  	go test --bench=.
+
+   
 ### Использование. How use  
-	go run gosberpay.go
-	go run register.go  
-	go run getOrderStatusExtended.go   
+
+	./gosberpay
+	./gw-mtls-gate  
+	./gw-mtls-service   
 	
 ### Ответ боевого сервера Сбербанка:
+[:arrow_up:Содержание](#Содержание)  
 #### на запрос регистрации заказа (`register`)с недостоверным ID в запросе (нет регистрации):   
 	Status = 200 OK 2023/09/23 15:49:28 
 	Response of server:
@@ -52,12 +95,31 @@
 	Status = 200 OK 2023/10/10 12:17:08 
 	Response of server: 
 	{"errorCode":"5","errorMessage":"[userName] or [password] or [token] is empty"}  
-	
-
-
-  
-
-
-
-
  
+	
+### Блок-схема обмена данными. Block diagram of work     
+[:arrow_up:Содержание](#Содержание)  
+			
+```mermaid
+graph TB
+
+  SubGraph1Flow
+  subgraph "GRPC server on cloud"
+  SubGraph1Flow(Module `gw-mtls-service`)
+  end
+ 
+  subgraph "GRPC gateway on local server"
+  SubGraph2Flow(http-proxy)
+  end
+
+  subgraph "Sberpay remote server"
+  SubGraph3Flow(Service-pay)
+  end
+
+  subgraph "HTTP-clients"
+  Node1[Requests from clients] -- REST/HTTP/1.1 <--> SubGraph2Flow
+  SubGraph2Flow[Module `gw-mtls-gate`] -- GRPC-channel_HTTP/2 <--> SubGraph1Flow
+  SubGraph1Flow(Module `gw-mtls-service`) -- REST/HTTP/1.1 <--> SubGraph3Flow
+end
+```
+  

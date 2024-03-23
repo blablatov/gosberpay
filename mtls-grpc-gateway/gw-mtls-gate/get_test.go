@@ -117,7 +117,7 @@ func TestGet(t *testing.T) {
 
 func BenchmarkGet(b *testing.B) {
 	b.ReportAllocs()
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 350; i++ {
 		cert, err := tls.LoadX509KeyPair(crtFile, keyFile)
 		if err != nil {
 			log.Fatalf("Сертификат и ключ не получены: %v\n", err)
@@ -164,7 +164,7 @@ func BenchmarkGet(b *testing.B) {
 
 		for param, n := range count {
 			if n > 0 {
-				getUrl := "https://localhost:8443/v1/register/" + param
+				getUrl := "https://localhost:8444/v1/register/" + param
 				resp, err := client.Get(getUrl)
 				if err != nil {
 					log.Fatal(err)
