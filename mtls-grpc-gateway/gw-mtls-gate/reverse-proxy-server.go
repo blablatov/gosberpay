@@ -16,6 +16,7 @@ import (
 	"os"
 	"path/filepath"
 	rn "runtime"
+	"time"
 
 	gw "github.com/blablatov/gosberpay/mtls-grpc-gateway/gw-mtls-proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -86,8 +87,10 @@ func main() {
 		})),
 	}
 
-	//ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Second) //err context deadline
-	ctx, cancel := context.WithCancel(context.Background())
+	// Finding of Duration. Тестированием определить оптимальное значение для крайнего срока
+	clientDeadline := time.Now().Add(time.Duration(5000 * time.Millisecond))
+	ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
 	// Register gRPC server endpoint, gRPC server should be running and accessible
