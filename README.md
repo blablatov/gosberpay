@@ -3,7 +3,7 @@
 - [Описание](https://github.com/blablatov/gosberpay/blob/master/README.md#Описание-Description)  
 - [Сборка сервиса](https://github.com/blablatov/gosberpay/blob/master/README.md#Сборка-локально-и-в-Yandex-Cloud-Build-local-and-to-Yandex-Cloud)
 - [Тестирование сервиса](https://github.com/blablatov/gosberpay/blob/master/README.md#Тестирование-локально-и-в-Yandex-Cloud-Testing-local-and-to-Yandex-Cloud)
-- [Тестирование запросов](https://github.com/blablatov/gosberpay/blob/master/README.md#Ответ-боевого-сервера-Сбербанка:)
+- [Тестирование запросов](https://github.com/blablatov/gosberpay/blob/master/README.md#Ответ-боевого-сервера-Сбербанка)
 - [Блок-схема обмена данными](https://github.com/blablatov/gosberpay/blob/master/README.md#Блок-схема-обмена-данными-Block-diagram-of-work)
 
 ### Описание. Description  
