@@ -118,8 +118,8 @@ graph TB
 
   subgraph "HTTP-clients"
   Node1[Requests from clients] -- REST/HTTP/1.1 <--> SubGraph2Flow
-  SubGraph2Flow[Module `gw-mtls-gate`] -- GRPC-channel_HTTP/2 <--> SubGraph1Flow
-  SubGraph1Flow(Module `gw-mtls-service`) -- REST/HTTP/1.1 <--> SubGraph3Flow
+  SubGraph2Flow[Module `gw-mtls-gate:8444`] -- GRPC-channel_HTTP/2 <--> SubGraph1Flow
+  SubGraph1Flow(Module `gw-mtls-service:50051`) -- REST/HTTP/1.1 <--> SubGraph3Flow
 end
 ```
   

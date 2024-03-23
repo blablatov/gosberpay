@@ -104,7 +104,7 @@ func main() {
 
 	LogInfo("grpc-gateway-server listening on localhost:8444")
 	// TLS connect. Подключение по протоколу TLS
-	if err := http.ListenAndServeTLS(":8444", crtFile, keyFile, mux); err != nil {
+	if err := http.ListenAndServeTLS("localhost:8444", crtFile, keyFile, mux); err != nil {
 		log.Fatalf("Could not setup HTTPS endpoint: %v", err)
 	}
 }
