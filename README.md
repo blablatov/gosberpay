@@ -3,7 +3,7 @@
 - [Описание](https://github.com/blablatov/gosberpay/blob/master/README.md#Описание-Description)  
 - [Сборка сервиса](https://github.com/blablatov/gosberpay/blob/master/README.md#Сборка-локально-и-в-Yandex-Cloud-Build-local-and-to-Yandex-Cloud)
 - [Тестирование сервиса](https://github.com/blablatov/gosberpay/blob/master/README.md#Тестирование-локально-и-в-Yandex-Cloud-Testing-local-and-to-Yandex-Cloud)
-- [Тестирование запросов](https://github.com/blablatov/gosberpay/blob/master/README.md#Ответ-боевого-сервера-Сбербанка:)
+- [Тестирование запросов](https://github.com/blablatov/gosberpay/blob/master/README.md#Ответ-боевого-сервера-Сбербанка)
 - [Блок-схема обмена данными](https://github.com/blablatov/gosberpay/blob/master/README.md#Блок-схема-обмена-данными-Block-diagram-of-work)
 
 ### Описание. Description  
@@ -117,9 +117,10 @@ graph TB
   end
 
   subgraph "HTTP-clients"
-  Node1[Requests from clients] -- REST/HTTP/1.1 <--> SubGraph2Flow
-  SubGraph2Flow[Module `gw-mtls-gate`] -- GRPC-channel_HTTP/2 <--> SubGraph1Flow
-  SubGraph1Flow(Module `gw-mtls-service`) -- REST/HTTP/1.1 <--> SubGraph3Flow
+  Node1[Requests from clients] -- REST_HTTP/1.1 <--> SubGraph2Flow
+  SubGraph2Flow[Module `gw-mtls-gate:mux:50051/8444`] -- GRPC-channel_HTTP/2 <--> SubGraph1Flow
+  SubGraph1Flow(Module `gw-mtls-service:50051`) -- REST_HTTP/1.1 <--> SubGraph3Flow
 end
 ```
+  
   
